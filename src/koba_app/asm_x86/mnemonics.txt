@@ -1,0 +1,56 @@
+;add 0
+;adc 2
+;sub 5
+;sbb 3
+;and 4
+;or  1
+;xor 6
+;cmp 7
+[operations]
+mov r/m32 reg32 : 89 modrm 
+mov reg32 r/m32 : 8b modrm
+add r/m32 reg32 : 01 modrm
+adc
+sub
+sbb
+neg
+mul
+div
+imul
+idiv
+xchg
+and
+or
+xor
+not
+
+
+add r/m32 imm8  : 83 r/m32-0 imm8
+add r/m32 imm32 : 81 r/m32-0 imm32
+add r/m8  imm8  : 80 r/m8-0 imm8
+
+add al imm8     : 04 imm8
+add eax imm32   : 05 imm32
+xor eax imm32   : 35 imm32
+sub eax imm32   : 2d imm32
+[registers]
+[32-bit]
+
+eax 0
+ecx 1
+edx 2
+ebx 3
+esp 4
+ebp 5
+esi 6
+edi 7
+#if bits==64
+r8d   8
+r9d   9
+r10d 10
+r11d 11
+r12d 12
+r13d 13
+r14d 14
+r15d 15
+
