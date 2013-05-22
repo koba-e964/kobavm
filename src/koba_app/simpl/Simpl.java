@@ -4,6 +4,7 @@ package koba_app.simpl;
 import java.io.*;
 import java.util.*;
 import koba_app.compiler.*;
+import koba_app.simpl.Parser.Expression;
 
 
 public class Simpl
@@ -77,6 +78,8 @@ public class Simpl
 			System.out.print(t+' ');
 		}
 		System.out.print(")");
+		Parser ps=new Parser(toks,vi);
+		Expression exp=ps.exp();
 		String binout=args.length>=1?args[0]:"tcalc.bin";
 		String asmout=args.length>=2?args[1]:"tcalc.asm";
 		//byte[] mac=vals.getFirst().toMachine();

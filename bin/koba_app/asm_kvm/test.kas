@@ -1,0 +1,10 @@
+.objtype "raw"
+
+.syntax "intel"
+
+.export _testfunc
+org 0x0
+_testfunc:
+	mov ax,ax ; 66 89 c0
+	xor ax,ax ; 66 33 c0
+	ret       ; c3
