@@ -132,6 +132,8 @@ public class Parser {
 		@Override
 		public byte[] toMachine()
 		{
+			throw new RuntimeException();
+			/*
 			List<Byte> out=new ArrayList<Byte>(0x400);
 			byte opc;
 			int tid=this.varId();
@@ -178,6 +180,7 @@ public class Parser {
 			for(int i=0;i<outary.length;i++)
 			{outary[i]=out.get(i);}
 			return outary;
+			*/
 		}
 		@Override
 		public int varId() {
@@ -231,6 +234,24 @@ public class Parser {
 			int r=right.getValue();
 			return div?l/r:l*r;
 		}
+
+		@Override
+		public byte[] toMachine() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int varId() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String asm(int addr) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	/**
 	 * AdditiveExpression = MultiplicativeExpression ((+|-) MulplicativeExpression)*
@@ -274,6 +295,24 @@ public class Parser {
 			int r=right.getValue();
 			return subt?l-r:l+r;
 		}
+
+		@Override
+		public byte[] toMachine() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public int varId() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public String asm(int addr) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 	public Expression exp()
 	{
@@ -289,6 +328,21 @@ public class Parser {
 		public int getValue()
 		{
 			return ar.getValue();
+		}
+		@Override
+		public byte[] toMachine() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public int varId() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		@Override
+		public String asm(int addr) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }
