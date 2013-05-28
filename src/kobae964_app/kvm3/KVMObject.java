@@ -2,8 +2,8 @@ package kobae964_app.kvm3;
 import static kobae964_app.kvm3.Flags.*;
 
 public class KVMObject {
-	int typeInfo;
-	byte[] data;
+	public int typeInfo;
+	public byte[] data;
 	public KVMObject(int classID,byte[] data,int flags)
 	{
 		if((flags&IMMUTABLE)==IMMUTABLE)
@@ -17,6 +17,7 @@ public class KVMObject {
 	{
 		return typeInfo/4;
 	}
+	
 	public boolean isVarObj()
 	{
 		return (typeInfo&(VAROBJ/16))!=0;

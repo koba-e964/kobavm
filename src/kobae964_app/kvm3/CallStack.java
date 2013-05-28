@@ -34,7 +34,7 @@ public class CallStack {
 		char[] array=value.toCharArray();
 		if(array.length>=5)
 		{
-			pushObject(value);
+			pushObject(new KVMObject(-1, value.getBytes(), 0));
 			return;
 		}
 		long val=0;
@@ -45,7 +45,7 @@ public class CallStack {
 		push(DataType.STRING.ordinal(),val);
 		
 	}
-	public void pushObject(Object o)
+	public void pushObject(KVMObject o)
 	{
 		long val=heap.create(o);
 		push(DataType.OBJECT.ordinal(),val);
@@ -80,7 +80,8 @@ public class CallStack {
 		long value=result.get(a[0]);
 		if(a[0]==DataType.OBJECT.ordinal())
 		{
-			return (String)heap.retrieve(value);
+			KVMObject ret=heap.retrieve(value);
+			return new String(ret.data);
 		}
 		char[] tmp=new char[4];
 		int i=0;

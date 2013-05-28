@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Heap {
-	Map<Object, Long> addr;
-	Map<Long,Object> inv;
+	Map<KVMObject, Long> addr;
+	Map<Long,KVMObject> inv;
 	long count=0L;
 	public Heap()
 	{
-		addr=new HashMap<Object, Long>();
-		inv=new HashMap<Long, Object>();
+		addr=new HashMap<KVMObject, Long>();
+		inv=new HashMap<Long, KVMObject>();
 		count=0;
 	}
-	long create(Object raw)
+	long create(KVMObject raw)
 	{
 		if(addr.containsKey(raw))
 		{
@@ -23,7 +23,7 @@ public class Heap {
 		inv.put(count, raw);
 		return count++;
 	}
-	Object retrieve(long val)
+	KVMObject retrieve(long val)
 	{
 		return inv.get(val);
 	}
