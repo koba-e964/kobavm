@@ -69,6 +69,26 @@ public class CallStack {
 		}
 		return Double.longBitsToDouble(result.get(a[0]));
 	}
+	public long popInt()
+	{
+		Map<Integer,Long> result=pop();
+		Integer[] a=result.keySet().toArray(new Integer[0]);
+		if(a[0]!=DataType.INT.ordinal())
+		{
+			throw new IllegalStateException("INT was required, but "+DataType.values()[a[0]]+" returned");
+		}
+		return result.get(a[0]);
+	}
+	public boolean popBool()
+	{
+		Map<Integer,Long> result=pop();
+		Integer[] a=result.keySet().toArray(new Integer[0]);
+		if(a[0]!=DataType.BOOL.ordinal())
+		{
+			throw new IllegalStateException("BOOL was required, but "+DataType.values()[a[0]]+" returned");
+		}
+		return result.get(a[0])!=0;
+	}
 	public String popString()
 	{
 		Map<Integer,Long> result=pop();
@@ -91,6 +111,18 @@ public class CallStack {
 			value>>>=16;
 		}
 		return new String(tmp).substring(0, i);
+	}
+	public KVMObject popObject()
+	{
+		Map<Integer,Long> result=pop();
+		Integer[] a=result.keySet().toArray(new Integer[0]);
+		if(a[0]!=DataType.OBJECT.ordinal())
+		{
+			throw new IllegalStateException("OBJECT was required, but "+DataType.values()[a[0]]+" returned");
+		}
+		long value=result.get(a[0]);
+		KVMObject ret=heap.retrieve(value);
+		return ret;
 	}
 	private List<Integer> data;
 	private Heap heap;
