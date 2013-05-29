@@ -1,0 +1,41 @@
+命令は32bit,下位v bitがopcodeに相当、それ以外がoperandに相当
+
+
+st0:スタックの一番上 st1:2番目 ...
+ar0:引数0,.. (命令との対応は示す)
+pc: ジャンプ先の場所(相対アドレス、命令に含まれることになる)
+命令に使用されたスタックのデータは通常消される。
+
+
+(1)ロード
+LD? 指定した値をスタックに積む。変数または定数を積む。
+
+LDC 定数を積む。(定数プールから)
+ LDC.im ar0 (code=ar0<<8|0):整数ar0を積む(ar0は-0x800000以上0x7fffff以下の整数)
+ LDC.cp ar0 (code=ar0<<8|0x10):定数プールのar0番のデータ(int,real,string,objectなど)を積む。(ar0は0xffffff以下のindexだが、そこまで大きくなることは無いはず)
+ //LDC.re st0 ar0 (code=ar0<<8|0x20):定数プールの(st0+ar0)番の(型問わず)を積む。(st0は整数、ar0は-0x800000以上0x7fffff以下の整数)
+ //LDC,reは比較的使われない方だろう。しいて言えばswitchのジャンプ先のテーブルとして使えるくらいかな
+LDV 変数を積む。(変数用スタックから)
+ LDV ar0 (code=ar0<<8|1):変数用スタックのar0番の変数をスタックに積む
+
+GETFIELD 指定したオブジェクトのメンバを取得、スタックに積む
+ GETFIELD st0 st1 (code=0x2) st0(object)のst1(object,String)という名前の変数を取得。
+ GETFIELD st0 ar0 (code=ar0<<8|0x12) st0(object)のar0番の変数を取得。変数の番号を調べるのはコンパイラの仕事。標準ライブラリ向け?
+
+
+
+(2)ストア
+STV 指定した値を変数に格納
+ STV st0 ar0:(code=ar0<<8|3)変数スタックのar0番にst0を格納。型が合わなければエラー。
+
+SETFIELD 指定したオブジェクトのメンバを設定
+ SETFIELD st0 st1 st2 (code=0x4) st0(object)のst1(object,String)という名前の変数にst2を設定する。型が違ったらエラー。
+
+(3)スタック操作
+ DUP スタックの要素を複製して積む
+　DUP ar0 (code=ar0<<8|5):スタックの上からar0番目(0-indexed)をシャロウコピーして積む
+
+ SWAP ar0 ar1(code=ar0<<8|ar1<<20|6):スタックの上からar0番目とar1番目を入れ替える
+ 
+(4)演算
+
