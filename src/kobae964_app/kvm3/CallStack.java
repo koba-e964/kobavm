@@ -17,6 +17,10 @@ public class CallStack {
 		data.add((int)val);
 		data.add((int)(val>>>32));
 	}
+	public void push(VarEntry ve)
+	{
+		push(ve.type,ve.value);
+	}
 	public void pushReal(double value)
 	{
 		push(DataType.REAL.ordinal(),Double.doubleToLongBits(value));
@@ -32,77 +36,80 @@ public class CallStack {
 	public void pushString(String value)
 	{
 		char[] array=value.toCharArray();
-		if(array.length>=5)
+		//if(array.length>=5)
 		{
 			pushObject(new KVMObject(-1, value.getBytes(), 0));
 			return;
 		}
+		/*
 		long val=0;
 		for(int i=0;i<array.length;i++)
 		{
 			val|=(long)array[i]<<(i*16);
 		}
 		push(DataType.STRING.ordinal(),val);
-		
+		*/
 	}
 	public void pushObject(KVMObject o)
 	{
 		long val=heap.create(o);
 		push(DataType.OBJECT.ordinal(),val);
 	}
-	private Map<Integer,Long> pop()
+	public VarEntry pop()
 	{
 		int type=data.get(data.size()-3);
 		long value=data.get(data.size()-2);
 		value&=0xffffffffL;
 		value|=(long)data.get(data.size()-1)<<32L;
 		data.subList(data.size()-3, data.size()).clear();
-		return Collections.singletonMap(type, value);
+		return new VarEntry(type, value);
 	}
 	public double popReal()
 	{
-		Map<Integer,Long> result=pop();
-		Integer[] a=result.keySet().toArray(new Integer[0]);
-		if(a[0]!=DataType.REAL.ordinal())
+		VarEntry result=pop();
+		int a=result.type;
+		if(a!=DataType.REAL.ordinal())
 		{
-			throw new IllegalStateException("REAL was required, but "+DataType.values()[a[0]]+" returned");
+			throw new IllegalStateException("REAL was required, but "+DataType.values()[a]+" returned");
 		}
-		return Double.longBitsToDouble(result.get(a[0]));
+		return Double.longBitsToDouble(result.value);
 	}
 	public long popInt()
 	{
-		Map<Integer,Long> result=pop();
-		Integer[] a=result.keySet().toArray(new Integer[0]);
-		if(a[0]!=DataType.INT.ordinal())
+		VarEntry result=pop();
+		int a=result.type;
+		if(a!=DataType.INT.ordinal())
 		{
-			throw new IllegalStateException("INT was required, but "+DataType.values()[a[0]]+" returned");
+			throw new IllegalStateException("INT was required, but "+DataType.values()[a]+" returned");
 		}
-		return result.get(a[0]);
+		return result.value;
 	}
 	public boolean popBool()
 	{
-		Map<Integer,Long> result=pop();
-		Integer[] a=result.keySet().toArray(new Integer[0]);
-		if(a[0]!=DataType.BOOL.ordinal())
+		VarEntry result=pop();
+		int a=result.type;
+		if(a!=DataType.BOOL.ordinal())
 		{
-			throw new IllegalStateException("BOOL was required, but "+DataType.values()[a[0]]+" returned");
+			throw new IllegalStateException("BOOL was required, but "+DataType.values()[a]+" returned");
 		}
-		return result.get(a[0])!=0;
+		return result.value!=0;
 	}
 	public String popString()
 	{
-		Map<Integer,Long> result=pop();
-		Integer[] a=result.keySet().toArray(new Integer[0]);
-		if(a[0]!=DataType.STRING.ordinal()&&a[0]!=DataType.OBJECT.ordinal())
+		VarEntry result=pop();
+		int a=result.type;
+		if(/*a!=DataType.STRING.ordinal()&&*/a!=DataType.OBJECT.ordinal())
 		{
-			throw new IllegalStateException("STRING was required, but "+DataType.values()[a[0]]+" returned");
+			throw new IllegalStateException("STRING was required, but "+DataType.values()[a]+" returned");
 		}
-		long value=result.get(a[0]);
-		if(a[0]==DataType.OBJECT.ordinal())
+		long value=result.value;
+		if(a==DataType.OBJECT.ordinal())
 		{
 			KVMObject ret=heap.retrieve(value);
 			return new String(ret.data);
 		}
+		throw new IllegalStateException();
+		/*
 		char[] tmp=new char[4];
 		int i=0;
 		for(;i<4&&value!=0;i++)
@@ -111,29 +118,22 @@ public class CallStack {
 			value>>>=16;
 		}
 		return new String(tmp).substring(0, i);
+		*/
 	}
 	public KVMObject popObject()
 	{
-		Map<Integer,Long> result=pop();
-		Integer[] a=result.keySet().toArray(new Integer[0]);
-		if(a[0]!=DataType.OBJECT.ordinal())
+		VarEntry result=pop();
+		int a=result.type;
+		if(a!=DataType.OBJECT.ordinal())
 		{
-			throw new IllegalStateException("OBJECT was required, but "+DataType.values()[a[0]]+" returned");
+			throw new IllegalStateException("OBJECT was required, but "+DataType.values()[a]+" returned");
 		}
-		long value=result.get(a[0]);
+		long value=result.value;
 		KVMObject ret=heap.retrieve(value);
 		return ret;
 	}
 	private List<Integer> data;
 	private Heap heap;
-	static enum DataType
-	{
-		REAL,
-		INT,
-		BOOL,
-		STRING,
-		OBJECT,
-	}
 	@Override
 	public String toString()
 	{
