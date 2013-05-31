@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class ClassLoader {
 	Map<String, Integer> table=new HashMap<String, Integer>();
+	Map<Integer,ClassData> dat=new HashMap<Integer,ClassData>();
 	int count=0;
 	static ClassLoader inst=new ClassLoader();
 	public static ClassLoader getInstance()
@@ -19,18 +20,16 @@ public class ClassLoader {
 	public int registerClass(String name)
 	{
 		table.put(name,count);
+		ClassData cd=new ClassData(count, false,name);
+		dat.put(count,cd);
 		return count++;
 	}
-	public int getClassID(String name,boolean constobj)
+	public ClassData getClassData(int id)
 	{
-		return this.getRawClassID(name, constobj)*4+(constobj?Flags.CONSTOBJ/16:Flags.VAROBJ/16);
+		return dat.get(id);
 	}
-	public int getRawClassID(String name,boolean constobj)
+	public ClassData getClassData(String name)
 	{
-		if(!table.containsKey(name))
-		{
-			throw new RuntimeException();
-		}
-		return table.get(name);
+		return getClassData(table.get(name));
 	}
 }

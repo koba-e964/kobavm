@@ -13,6 +13,10 @@ public class KVMObject {
 		this.data=data;
 		typeInfo=classID*4+(flags&IMMUTABLE)/16;//0-3
 	}
+	public KVMObject(String name,byte[] data,int flags)
+	{
+		
+	}
 	public int getClassID()
 	{
 		return typeInfo/4;

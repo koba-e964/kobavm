@@ -27,6 +27,7 @@ public class CPU {
 		{
 			this.vtable.store(i, new VarEntry(DataType.INT.ordinal(), i*i));
 		}
+		new KString("bytecode_test",heap);//creates an instance of KString.
 	}
 	void run()
 	{
@@ -58,9 +59,46 @@ public class CPU {
 		{
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
-			System.out.printf("GETFIELD st0=%d st1=%d\n",st0.value,st1.value);
 			int type=st1.type&TYPE_MASK;
-			String name=heap.retrieve(st1.value).toString();
+			String name=new KString(heap.retrieve(st1.value)).getContent();
+			System.out.printf("GETFIELD st0=%d st1=%s\n",st0.value,name);
+			//TODO 
+			break;
+		}
+		case 3://STV
+		{
+			VarEntry st0=stack.pop();
+			int ar0=code>>>8;//unsigned
+			System.out.println("STV st0="+st0.value+" ar0="+ar0);
+			vtable.store(ar0,st0);
+			break;
+		}
+		case 4://SETFIELD
+		{
+			VarEntry st0=stack.pop();
+			VarEntry st1=stack.pop();
+			VarEntry st2=stack.pop();
+			int type=st1.type&TYPE_MASK;
+			String name=new KString(heap.retrieve(st1.value)).getContent();
+			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
+			//TODO 
+			break;
+		}
+		case 5://DUP
+		{
+			int ar0=code>>>8;
+			VarEntry ve=stack.getAt(ar0);
+			stack.push(ve.clone());
+			break;
+		}
+		case 6://SWAP
+		{
+			int ar0=(code>>>8)&0xfff;//unsigned
+			int ar1=(code>>>20)&0xfff;
+			VarEntry ve1=stack.getAt(ar0);
+			VarEntry ve2=stack.getAt(ar1);
+			stack.setAt(ar0,ve2);
+			stack.setAt(ar1,ve1);
 			break;
 		}
 		case 0x1f://EXIT

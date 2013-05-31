@@ -146,6 +146,25 @@ public class CallStack {
 		sb.append(']');
 		return sb.toString();
 	}
+	public VarEntry getAt(int index)
+	{
+		int size=data.size();
+		int type=data.get(size-3*index);
+		long value=data.get(size-3*index+1);
+		value=(long)data.get(size-3*index+2)<<32L;
+		return new VarEntry(type,value);
+	}
+	public void setAt(int index,VarEntry ve)
+	{
+		int size=data.size();
+		data.set(size-3*index,ve.type);
+		data.set(size-3*index+1,(int)ve.value);
+		data.set(size-3*index+2,(int)(ve.value>>>32L));
+	}
+	public int size()
+	{
+		return data.size()/3;
+	}
 	public static void main(String [] args)
 	{
 		CallStack cs=new CallStack();
