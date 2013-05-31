@@ -139,27 +139,28 @@ public class CallStack {
 	{
 		StringBuilder sb=new StringBuilder();
 		sb.append('[');
-		for(int i:data)
+		for(int i=0,s=this.size();i<s;i++)
 		{
-			sb.append(String.format("%08x, ",i));
+			sb.append(getAt(i));
+			sb.append(", ");
 		}
 		sb.append(']');
 		return sb.toString();
 	}
 	public VarEntry getAt(int index)
 	{
-		int size=data.size();
-		int type=data.get(size-3*index);
-		long value=data.get(size-3*index+1);
-		value=(long)data.get(size-3*index+2)<<32L;
+		int size_3=data.size()-3;
+		int type=data.get(size_3-3*index);
+		long value=data.get(size_3-3*index+1);
+		value|=(long)data.get(size_3-3*index+2)<<32L;
 		return new VarEntry(type,value);
 	}
 	public void setAt(int index,VarEntry ve)
 	{
-		int size=data.size();
-		data.set(size-3*index,ve.type);
-		data.set(size-3*index+1,(int)ve.value);
-		data.set(size-3*index+2,(int)(ve.value>>>32L));
+		int size_3=data.size()-3;
+		data.set(size_3-3*index,ve.type);
+		data.set(size_3-3*index+1,(int)ve.value);
+		data.set(size_3-3*index+2,(int)(ve.value>>>32L));
 	}
 	public int size()
 	{

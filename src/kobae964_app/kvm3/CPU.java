@@ -101,6 +101,13 @@ public class CPU {
 			stack.setAt(ar1,ve1);
 			break;
 		}
+		case 7://ADD
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1+val2);
+			break;
+		}
 		case 0x1f://EXIT
 			return -1;
 		}

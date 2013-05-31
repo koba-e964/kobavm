@@ -17,4 +17,9 @@ public class VarEntry implements Cloneable{
 			throw new RuntimeException(e);
 		}
 	}
+	@Override
+	public String toString()
+	{
+		return "("+DataType.values()[type&Flags.TYPE_MASK].name()+", "+value+")";
+	}
 }
