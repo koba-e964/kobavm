@@ -2,6 +2,7 @@ package kobae964_app.kvm3;
 
 import static kobae964_app.kvm3.DataType.*;
 import static kobae964_app.kvm3.Flags.*;
+import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
 public class CPU {
@@ -73,7 +74,7 @@ public class CPU {
 			String name=new KString(Heap.retrieve(st1.value)).getContent();
 			System.out.printf("GETFIELD st0=%d st1=%s\n",st0.value,name);
 			//checking if st0.type-=OBJECT.ordinal() is necessary but now omitted for convenience
-			VarEntry res=ClassLoader.getInstance().getField(st0.value,name);
+			VarEntry res=ClassLoader.getField(st0.value,name);
 			stack.push(res);
 			break;
 		}
@@ -93,8 +94,13 @@ public class CPU {
 			int type=st1.type&TYPE_MASK;
 			String name=new KString(Heap.retrieve(st1.value)).getContent();
 			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
-			KVMObject obj=Heap.retrieve(st0.value);
-			ClassLoader.getInstance().getClassData(type).setField(obj, name, st2);
+			/*
+			if(type!=DataType.OBJECT.ordinal())
+			{
+				throw new IllegalStateException();
+			}
+			*/
+			ClassLoader.setField(st0.value, name, st2);
 			break;
 		}
 		case 5://DUP

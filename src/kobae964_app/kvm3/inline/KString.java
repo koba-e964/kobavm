@@ -1,4 +1,13 @@
-package kobae964_app.kvm3;
+package kobae964_app.kvm3.inline;
+
+import kobae964_app.kvm3.ClassCode;
+import kobae964_app.kvm3.ClassData;
+import kobae964_app.kvm3.ClassLoader;
+import kobae964_app.kvm3.DataType;
+import kobae964_app.kvm3.Flags;
+import kobae964_app.kvm3.Heap;
+import kobae964_app.kvm3.KVMObject;
+import kobae964_app.kvm3.VarEntry;
 
 /**
  * String used as internal expression
@@ -15,7 +24,7 @@ public class KString extends ClassCode{
 	}
 	public KString(String str)
 	{
-		int clzId=ClassLoader.getInstance().getClassID("String");
+		int clzId=ClassLoader.getClassID("String");
 		addr=Heap.create(clzId,str.getBytes(),Flags.CONSTOBJ);
 		var=Heap.retrieve(addr);
 		cont=str;

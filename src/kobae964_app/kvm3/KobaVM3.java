@@ -13,6 +13,9 @@ public class KobaVM3 {
 				0,1,2,0,//LDC.im 513 ("snd")
 				0,23,1,0,//LDC.im 279 (Pair[23,529])
 				2,0,0,0,//GETFIELD st0,st1
+				0,1,0,0,
+				0,2,0,0,
+				2,0,0,0,
 				-1,0,0,0,//EXIT
 		}, 0);
 		CPU cpu=new CPU(mem);
