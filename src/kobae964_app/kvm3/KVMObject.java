@@ -1,10 +1,21 @@
 package kobae964_app.kvm3;
 import static kobae964_app.kvm3.Flags.*;
 
+/**
+ * Internal expression of objects in VM.
+ * Every instance of KVMObject should be created by Heap.
+ *
+ */
 public class KVMObject {
-	public int typeInfo;
+	int typeInfo;
 	public byte[] data;
-	public KVMObject(int classID,byte[] data,int flags)
+	/**
+	 * This constructor should be called only by {@link Heap#create(int, byte[], int)}.
+	 * @param classID
+	 * @param data
+	 * @param flags
+	 */
+	KVMObject(int classID,byte[] data,int flags)
 	{
 		if((flags&IMMUTABLE)==IMMUTABLE)
 		{
@@ -12,10 +23,6 @@ public class KVMObject {
 		}
 		this.data=data;
 		typeInfo=classID*4+(flags&IMMUTABLE)/16;//0-3
-	}
-	public KVMObject(String name,byte[] data,int flags)
-	{
-		
 	}
 	public int getClassID()
 	{

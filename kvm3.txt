@@ -21,8 +21,8 @@ LDV 変数を積む。(変数用スタックから)
  LDV ar0 (code=ar0<<8|1):変数用スタックのar0番の変数をスタックに積む
 
 GETFIELD 指定したオブジェクトのメンバを取得、スタックに積む
- GETFIELD st0 st1 (code=0x2) st0(object)のst1(object,String)という名前の変数を取得。
- GETFIELD st0 ar0 (code=ar0<<8|0x12) st0(object)のar0番の変数を取得。変数の番号を調べるのはコンパイラの仕事。標準ライブラリ向け?
+ GETFIELD st0 st1 (code=0x2) st0(object)のst1(object,String(ascii))という名前の変数を取得。
+ //GETFIELD st0 ar0 (code=ar0<<8|0x12) st0(object)のar0番の変数を取得。変数の番号を調べるのはコンパイラの仕事。標準ライブラリ向け?
 
 
 
@@ -40,4 +40,31 @@ SETFIELD 指定したオブジェクトのメンバを設定
  SWAP ar0 ar1(code=ar0<<8|ar1<<20|6):スタックの上からar0番目とar1番目を入れ替える
  
 (4)演算
+
+ADD 加算
+ ADD st0 st1(code=7)
+SUB 減算
+ SUB st0 st1(code=8)
+MUL 乗算
+ MUL st0 st1(code=9)
+DIV 除算
+ DIV st0 st1(code=0xa)商と余りをこの順でスタックに積む
+
+
+(5)呼び出し
+CALL
+ CALL ar0(code=ar0<<8|0xb):この命令の終端+ar0の位置のルーチンを呼び出す
+ CALL st0(0x1b):st0で指定された名前のルーチンを呼び出す
+ CALL st0 st1(code=0xc):st0のオブジェクトのst1で指定された名前のメソッドを呼び出す
+
+JMP
+ JMP ar0(code=ar0<<8|0xd)
+RET
+ RET (code=0xe)
+
+
+ 
+
+
+
 

@@ -9,7 +9,6 @@ public class CallStack {
 	public CallStack()
 	{
 		data=new ArrayList<Integer>(1000);
-		heap=new Heap();
 	}
 	private void push(int type,long val)
 	{
@@ -35,25 +34,17 @@ public class CallStack {
 	}
 	public void pushString(String value)
 	{
-		char[] array=value.toCharArray();
-		//if(array.length>=5)
-		{
-			pushObject(new KVMObject(-1, value.getBytes(), 0));
-			return;
-		}
-		/*
-		long val=0;
-		for(int i=0;i<array.length;i++)
-		{
-			val|=(long)array[i]<<(i*16);
-		}
-		push(DataType.STRING.ordinal(),val);
-		*/
+		long addr=new KString(value).getAddress();
+		pushObject(addr);
 	}
-	public void pushObject(KVMObject o)
+	public void pushObject(int classID,byte[] data,int flags)
 	{
-		long val=heap.create(o);
+		long val=Heap.create(classID, data, flags);
 		push(DataType.OBJECT.ordinal(),val);
+	}
+	public void pushObject(long addr)
+	{
+		push(DataType.OBJECT.ordinal(),addr);
 	}
 	public VarEntry pop()
 	{
@@ -105,7 +96,7 @@ public class CallStack {
 		long value=result.value;
 		if(a==DataType.OBJECT.ordinal())
 		{
-			KVMObject ret=heap.retrieve(value);
+			KVMObject ret=Heap.retrieve(value);
 			return new String(ret.data);
 		}
 		throw new IllegalStateException();
@@ -129,11 +120,10 @@ public class CallStack {
 			throw new IllegalStateException("OBJECT was required, but "+DataType.values()[a]+" returned");
 		}
 		long value=result.value;
-		KVMObject ret=heap.retrieve(value);
+		KVMObject ret=Heap.retrieve(value);
 		return ret;
 	}
 	private List<Integer> data;
-	private Heap heap;
 	@Override
 	public String toString()
 	{

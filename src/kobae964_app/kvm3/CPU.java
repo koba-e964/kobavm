@@ -2,12 +2,12 @@ package kobae964_app.kvm3;
 
 import static kobae964_app.kvm3.DataType.*;
 import static kobae964_app.kvm3.Flags.*;
+import kobae964_app.kvm3.inline.Pair;
 
 public class CPU {
 	Mem mem;
 	int pc;
 	CallStack stack;
-	Heap heap;
 	VariableTable vtable;
 	ClassLoader loader;
 	public CPU(Mem mem)
@@ -15,7 +15,6 @@ public class CPU {
 		this.mem=mem;
 		this.pc=0;
 		this.stack=new CallStack();
-		this.heap=new Heap();
 		this.vtable=new VariableTable();
 		this.loader=new ClassLoader();
 		/*
@@ -27,7 +26,17 @@ public class CPU {
 		{
 			this.vtable.store(i, new VarEntry(DataType.INT.ordinal(), i*i));
 		}
-		new KString("bytecode_test",heap);//creates an instance of KString.
+		for(int i=0;i<256;i++)
+		{
+			new KString("testString("+i+")");
+		}
+		for(int i=256;i<512;i++)
+		{
+			new Pair(i, i*i);
+		}
+		new KString("fst");
+		new KString("snd");
+		
 	}
 	void run()
 	{
@@ -60,9 +69,12 @@ public class CPU {
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
 			int type=st1.type&TYPE_MASK;
-			String name=new KString(heap.retrieve(st1.value)).getContent();
+			System.out.println("type="+type);
+			String name=new KString(Heap.retrieve(st1.value)).getContent();
 			System.out.printf("GETFIELD st0=%d st1=%s\n",st0.value,name);
-			//TODO 
+			//checking if st0.type-=OBJECT.ordinal() is necessary but now omitted for convenience
+			VarEntry res=ClassLoader.getInstance().getField(st0.value,name);
+			stack.push(res);
 			break;
 		}
 		case 3://STV
@@ -79,9 +91,10 @@ public class CPU {
 			VarEntry st1=stack.pop();
 			VarEntry st2=stack.pop();
 			int type=st1.type&TYPE_MASK;
-			String name=new KString(heap.retrieve(st1.value)).getContent();
+			String name=new KString(Heap.retrieve(st1.value)).getContent();
 			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
-			//TODO 
+			KVMObject obj=Heap.retrieve(st0.value);
+			ClassLoader.getInstance().getClassData(type).setField(obj, name, st2);
 			break;
 		}
 		case 5://DUP
@@ -108,10 +121,64 @@ public class CPU {
 			stack.pushInt(val1+val2);
 			break;
 		}
+		case 8://SUB
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1-val2);
+			break;
+		}
+		case 9://MUL
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1*val2);
+			break;
+		}
+		case 10://DIV
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1/val2);
+			stack.pushInt(val1%val2);
+			break;
+		}
+		case 11://CALL ar0
+		{
+			int ar0=code>>8;//signed
+			int dest=pc+ar0;
+			call(dest);
+			break;
+		}
+		case 13://JMP
+		{
+			int ar0=code>>8;//signed
+			pc+=ar0;
+			break;
+		}
+		case 14://ret
+		{
+			ret();
+			break;
+		}
 		case 0x1f://EXIT
 			return -1;
+		default:
+			throw new RuntimeException("Invalid Code");
 		}
 		System.out.println("callstack="+stack);
 		return 0;
+	}
+	public void call(int addr)
+	{
+		stack.pushInt(pc);
+		vtable.allocate(100);//actual value should be recalled from classData
+		pc=addr;
+	}
+	public void ret()
+	{
+		long a=stack.popInt();
+		vtable.deallocate();
+		pc=(int)a;
 	}
 }

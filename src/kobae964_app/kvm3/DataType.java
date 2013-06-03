@@ -1,6 +1,6 @@
 package kobae964_app.kvm3;
 
-enum DataType
+public enum DataType
 {
 	REAL,
 	INT,

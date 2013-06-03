@@ -7,21 +7,33 @@ package kobae964_app.kvm3;
 public class KString extends ClassCode{
 	KVMObject var;
 	String cont;
+	long addr;
 	public KString(KVMObject obj)
 	{
 		var=obj;
 		cont=new String(obj.data);
 	}
-	public KString(String str,Heap heap)
+	public KString(String str)
 	{
-		heap.create(var=new KVMObject(0,str.getBytes(),Flags.CONSTOBJ));
+		int clzId=ClassLoader.getInstance().getClassID("String");
+		addr=Heap.create(clzId,str.getBytes(),Flags.CONSTOBJ);
+		var=Heap.retrieve(addr);
 		cont=str;
 	}
-	@Override
-	public ClassCode create(KVMObject obj) {
-		return new KString(obj);
+	/**
+	 * called by {@link ClassData#getField(KVMObject, String)}.
+	 * @param addr
+	 */
+	public KString(long addr)
+	{
+		this.addr=addr;
+		var=Heap.retrieve(addr);
+		cont=new String(var.data);
 	}
-
+	public long getAddress()
+	{
+		return addr;
+	}
 	@Override
 	public VarEntry getField(String name) {
 		throw new RuntimeException();

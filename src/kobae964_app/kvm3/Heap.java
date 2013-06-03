@@ -4,16 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Heap {
-	Map<KVMObject, Long> addr;
-	Map<Long,KVMObject> inv;
-	long count=0L;
-	public Heap()
+	static Map<KVMObject, Long> addr;
+	static Map<Long,KVMObject> inv;
+	static long count=0L;
+	static
 	{
 		addr=new HashMap<KVMObject, Long>();
 		inv=new HashMap<Long, KVMObject>();
 		count=0;
 	}
-	long create(KVMObject raw)
+	/**
+	 * Every subclass of {@link ClassCode} should call this method to register itself.
+	 * @param classID
+	 * @param data
+	 * @param flags
+	 * @return
+	 */
+	public static long create(int classID,byte[] data,int flags)
+	{
+		return create(new KVMObject(classID, data, flags));
+	}
+	private static long create(KVMObject raw)
 	{
 		if(addr.containsKey(raw))
 		{
@@ -23,9 +34,16 @@ public class Heap {
 		inv.put(count, raw);
 		return count++;
 	}
-	KVMObject retrieve(long val)
+	public static KVMObject retrieve(long val)
 	{
 		return inv.get(val);
 	}
-
+	public static long toAddress(KVMObject obj)
+	{
+		if(addr.containsKey(obj))
+		{
+			return addr.get(obj);
+		}
+		throw new IllegalArgumentException();
+	}
 }
