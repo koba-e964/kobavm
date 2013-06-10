@@ -1,5 +1,14 @@
 package kobae964_app.kvm3;
 
+/**
+ * The superclass of all classes that implement procedures executed in KVM.
+ * Every subclass of {@link ClassCode} should have static method named {@code createInstanceFromAddress(long)} 
+ * so that an instance can be create from the address of an object in {@link Heap}.
+ * It also should implement class-specific constructors that initialize data from arguments
+ * and register the data into {@link Heap} to get the address of it.
+ * @author koba-e964
+ *
+ */
 public abstract class ClassCode {
 	/**
 	 * Gets the address of this object in Heap.

@@ -17,6 +17,7 @@ public class KString extends ClassCode{
 	KVMObject var;
 	String cont;
 	long addr;
+	private KString(){}
 	public KString(KVMObject obj)
 	{
 		var=obj;
@@ -33,11 +34,24 @@ public class KString extends ClassCode{
 	 * called by {@link ClassData#getField(KVMObject, String)}.
 	 * @param addr
 	 */
+	@Deprecated
 	public KString(long addr)
 	{
 		this.addr=addr;
 		var=Heap.retrieve(addr);
 		cont=new String(var.data);
+	}
+	/**
+	 * called by {@link ClassData#getField(KVMObject, String)}.
+	 * @param addr address of the object
+	 */
+	public static KString createInstanceFromAddress(long addr)
+	{
+		KString inst=new KString();
+		inst.addr=addr;
+		inst.var=Heap.retrieve(addr);
+		inst.cont=new String(inst.var.data);
+		return inst;
 	}
 	public long getAddress()
 	{

@@ -44,9 +44,9 @@ public class ClassData {
 		ClassCode inst;
 		try {
 			//new TypeName(addr);
-			inst=codeClz.getConstructor(long.class).newInstance(addr);
-		}catch(Exception ex)
-		{
+			//inst=codeClz.getConstructor(long.class).newInstance(addr);
+			inst=(ClassCode) codeClz.getMethod("createInstanceFromAddress", long.class).invoke(null, addr);
+		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}
 		return inst.getField(name);

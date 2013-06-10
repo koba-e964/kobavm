@@ -61,10 +61,8 @@ JMP
  JMP ar0(code=ar0<<8|0xd)
 RET
  RET (code=0xe)
-
-
+(6)比較/分岐
+ CMP.lt st0 st1(code=0xe):整数st0とst1に対し、st0<st1であればtrueを積む
+ CMP.eq st0 st1 (code=0xf):st0とst1が同じ種類(int,real,object,bool)の値であり、等しければtrueを積む
+ NOT st0(code=0x10):bool値st0の値を反転して積む
  
-
-
-
-

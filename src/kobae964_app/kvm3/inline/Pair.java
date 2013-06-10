@@ -27,6 +27,7 @@ public class Pair extends ClassCode{
 		}
 		return v;
 	}
+	private Pair(){}
 	public Pair(int fst,int snd)
 	{
 		int clzID=ClassLoader.getClassID("Pair");
@@ -40,9 +41,21 @@ public class Pair extends ClassCode{
 	 * called by {@link ClassData#getField(KVMObject, String)}.
 	 * @param addr
 	 */
+	@Deprecated
 	public Pair(long addr)
 	{
 		this.addr=addr;
+	}
+	/**
+	 * Creates an Code Object with existing object.
+	 * called by {@link ClassData#getField(KVMObject, String)}.
+	 * @param addr
+	 */
+	public static Pair createInstanceFromAddress(long addr)
+	{
+		Pair inst=new Pair();
+		inst.addr=addr;
+		return inst;
 	}
 	@Override
 	public VarEntry getField(String name) {
