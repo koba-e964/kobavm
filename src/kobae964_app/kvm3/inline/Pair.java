@@ -108,7 +108,6 @@ public class Pair extends ClassCode{
 	}
 	@Override
 	public long getAddress() {
-		// TODO Auto-generated method stub
 		return addr;
 	}
 

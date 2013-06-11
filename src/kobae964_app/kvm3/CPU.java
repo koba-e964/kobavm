@@ -71,7 +71,7 @@ public class CPU {
 			VarEntry st1=stack.pop();
 			int type=st1.type&TYPE_MASK;
 			System.out.println("type="+type);
-			String name=new KString(Heap.retrieve(st1.value)).getContent();
+			String name=KString.getContent(st1.value);
 			System.out.printf("GETFIELD st0=%d st1=%s\n",st0.value,name);
 			//checking if st0.type-=OBJECT.ordinal() is necessary but now omitted for convenience
 			VarEntry res=ClassLoader.getField(st0.value,name);
@@ -92,7 +92,7 @@ public class CPU {
 			VarEntry st1=stack.pop();
 			VarEntry st2=stack.pop();
 			int type=st1.type&TYPE_MASK;
-			String name=new KString(Heap.retrieve(st1.value)).getContent();
+			String name=KString.getContent(st1.value);
 			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
 			/*
 			if(type!=DataType.OBJECT.ordinal())
@@ -166,6 +166,10 @@ public class CPU {
 		{
 			ret();
 			break;
+		}
+		case 16://LDC.cp
+		{
+			VarEntry ve=stack.pop();
 		}
 		case 0x1f://EXIT
 			return -1;
