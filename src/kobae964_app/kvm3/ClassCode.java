@@ -26,6 +26,6 @@ public abstract class ClassCode {
 	 */
 	public static VarEntry getConstant(int id)
 	{
-		return new VarEntry(DataType.OBJECT.ordinal(),-1);//NULL reference
+		return new VarEntry(DataType.OBJECT.ordinal(),Heap.NULL_ADDR);//NULL reference
 	}
 }
