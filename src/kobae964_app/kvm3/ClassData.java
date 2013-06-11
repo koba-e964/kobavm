@@ -1,7 +1,5 @@
 package kobae964_app.kvm3;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * ClassData
  * created only by ClassLoader

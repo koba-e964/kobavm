@@ -1,6 +1,5 @@
 package kobae964_app.kvm3;
 
-import static kobae964_app.kvm3.DataType.*;
 import static kobae964_app.kvm3.Flags.*;
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
@@ -94,12 +93,11 @@ public class CPU {
 			int type=st1.type&TYPE_MASK;
 			String name=KString.getContent(st1.value);
 			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
-			/*
 			if(type!=DataType.OBJECT.ordinal())
 			{
-				throw new IllegalStateException();
+				//throw new IllegalStateException();
+				//omitted for convenience
 			}
-			*/
 			ClassLoader.setField(st0.value, name, st2);
 			break;
 		}
@@ -167,9 +165,14 @@ public class CPU {
 			ret();
 			break;
 		}
-		case 16://LDC.cp
+		case 16://LDC.cp st0 ar0
 		{
-			VarEntry ve=stack.pop();
+			VarEntry st0=stack.pop();
+			String clzName=KString.getContent(st0.value);
+			int ar0=code>>>8;//unsigned
+			VarEntry result=ClassLoader.getConstant(ClassLoader.getClassID(clzName), ar0);
+			stack.push(result);
+			break;
 		}
 		case 0x1f://EXIT
 			return -1;

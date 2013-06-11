@@ -46,4 +46,11 @@ public class Heap {
 		}
 		throw new IllegalArgumentException();
 	}
+	/**
+	 * Address that indicates null reference.
+	 */
+	public static final long NULL_ADDR=-1;
+	public static boolean isNull(long addr){
+		return addr==NULL_ADDR;
+	}
 }
