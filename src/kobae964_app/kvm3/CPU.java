@@ -10,6 +10,10 @@ public class CPU {
 	CallStack stack;
 	VariableTable vtable;
 	ClassLoader loader;
+	/**
+	 * The ID of class which this CPU runs.
+	 */
+	int classID;
 	public CPU(Mem mem)
 	{
 		this.mem=mem;
@@ -26,16 +30,6 @@ public class CPU {
 		{
 			this.vtable.store(i, new VarEntry(DataType.INT.ordinal(), i*i));
 		}
-		for(int i=0;i<256;i++)
-		{
-			new KString("testString("+i+")");
-		}
-		for(int i=256;i<512;i++)
-		{
-			new Pair(i, i*i);
-		}
-		new KString("fst");
-		new KString("snd");
 		
 	}
 	void run()

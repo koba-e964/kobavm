@@ -12,6 +12,10 @@ package kobae964_app.kvm3;
 public abstract class ClassCode {
 	/**
 	 * Gets the address of this object in Heap.
+	 * Sample:
+	 * {@code long addr=new TypeName(args).getAddress();}
+	 * This code creates a new instance of TypeName, registers it with {@link Heap},
+	 * and returns the address of it.
 	 * @return address(long)
 	 */
 	public abstract long getAddress();

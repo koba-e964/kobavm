@@ -47,6 +47,10 @@ public class CallStack {
 	}
 	public VarEntry pop()
 	{
+		if(data.size()==0)
+		{
+			throw new IllegalStateException("Attempted to pop empty stack (in CallStack)");
+		}
 		int type=data.get(data.size()-3);
 		long value=data.get(data.size()-2);
 		value&=0xffffffffL;

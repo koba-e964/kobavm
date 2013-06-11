@@ -99,14 +99,32 @@ public class Pair extends ClassCode{
 	public long getAddress() {
 		return addr;
 	}
-	public static VarEntry getConstant()
+	/**
+	 * Retrieves a constant value from constant pool.
+	 * 0:"fst", 1:"snd", 2:new Pair(0,0)
+	 * @param id
+	 * @return
+	 */
+	public static VarEntry getConstant(int id)
 	{
-		return null;
+		if(id<0 || id>=3)
+		{
+			throw new IllegalArgumentException("Illegal id:"+id+" at inline/Pair");
+		}
+		return new VarEntry(DataType.OBJECT.ordinal(),cpool[id]);
 	}
 	static Map<String,Integer> offsets=new HashMap<String, Integer>();
+	/**
+	 * constant pool.
+	 */
+	static long[] cpool;
 	static
 	{
 		offsets.put("fst",0);
 		offsets.put("snd",4);
+		cpool=new long[3];
+		cpool[0]=new KString("fst").getAddress();
+		cpool[1]=new KString("snd").getAddress();
+		cpool[2]=new Pair(0, 0).getAddress();
 	}
 }
