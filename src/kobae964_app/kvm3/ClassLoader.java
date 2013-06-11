@@ -65,4 +65,16 @@ public class ClassLoader {
 		int clzID=obj.getClassID();
 		getClassData(clzID).setField(obj, name,val);
 	}
+	/**
+	 * This method retrieves a constant value in the constant pool in specified class.
+	 * This is equivalent to
+	 * {@code {@link ClassLoader}.getClassData(classID).getConstant(id)}
+	 * @param classID The class id which has the constant pool
+	 * @param id #constant
+	 * @return A constant value. The object indicated by it is const-obj.
+	 */
+	public static VarEntry getConstant(int classID,int id)
+	{
+		return getClassData(classID).getConstant(id);
+	}
 }

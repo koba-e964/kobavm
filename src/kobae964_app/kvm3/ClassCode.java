@@ -18,4 +18,14 @@ public abstract class ClassCode {
 	public abstract VarEntry getField(String name);
 	public abstract void setField(String name,VarEntry value);
 	public abstract VarEntry call(String name,VarEntry... args);
+	/**
+	 * By default this method always returns null reference(VarEntry that refers null, NOT {@code (VarEntry)null})
+	 * Subclasses should override this method.
+	 * @param id the ID of object in the constant pool
+	 * @return
+	 */
+	public static VarEntry getConstant(int id)
+	{
+		return new VarEntry(DataType.OBJECT.ordinal(),-1);//NULL reference
+	}
 }

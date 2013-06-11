@@ -36,23 +36,34 @@ public class ClassData {
 	}
 	public VarEntry getField(KVMObject obj,String name)
 	{
-		if(codeClz==null)
-		{
+		ClassCode inst;
+		inst = getClassCodeInstance(obj);
+		return inst.getField(name);
+	}
+	private ClassCode getClassCodeInstance(KVMObject obj) {
+		if(codeClz==null){
 			throw new RuntimeException("No ClassCode allocated");
 		}
 		long addr=Heap.toAddress(obj);
-		ClassCode inst;
 		try {
-			//new TypeName(addr);
-			//inst=codeClz.getConstructor(long.class).newInstance(addr);
-			inst=(ClassCode) codeClz.getMethod("createInstanceFromAddress", long.class).invoke(null, addr);
+			return (ClassCode) codeClz.getMethod("createInstanceFromAddress", long.class).invoke(null, addr);
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}
-		return inst.getField(name);
 	}
 	public void setField(KVMObject obj,String name,VarEntry v)
 	{
 		System.out.println("SetField "+name+"<-"+v+" in "+this.name);		
+	}
+	public VarEntry getConstant(int id)
+	{
+		VarEntry res;
+		try {
+			//TypeName.getConstant(id);
+			res=(VarEntry) codeClz.getMethod("getConstant",int.class).invoke(null, id);
+		} catch (Exception ex){
+			throw new RuntimeException(ex);
+		}
+		return res;
 	}
 }
