@@ -1,11 +1,14 @@
 package kobae964_app.kvm3.inline;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import kobae964_app.kvm3.*;
 import kobae964_app.kvm3.ClassLoader;
 
 public class Pair extends ClassCode{
-	long addr;
+	private long addr;
 	static byte[] toBytes(int v)
 	{
 		byte[] out=new byte[4];
@@ -60,16 +63,11 @@ public class Pair extends ClassCode{
 	@Override
 	public VarEntry getField(String name) {
 		KVMObject obj=Heap.retrieve(addr);
-		if(name.equals("fst"))
+		if(offsets.containsKey(name))
 		{
+			int offset=offsets.get(name);
 			byte[] buf=new byte[4];
-			System.arraycopy(obj.data,0,buf,0,4);
-			return new VarEntry(DataType.INT.ordinal(),toInt(buf));
-		}
-		if(name.equals("snd"))
-		{
-			byte[] buf=new byte[4];
-			System.arraycopy(obj.data,4,buf,0,4);
+			System.arraycopy(obj.data,offset,buf,0,4);
 			return new VarEntry(DataType.INT.ordinal(),toInt(buf));
 		}
 		return null;
@@ -78,24 +76,15 @@ public class Pair extends ClassCode{
 	@Override
 	public void setField(String name, VarEntry value) {
 		KVMObject obj=Heap.retrieve(addr);
-		if(name.equals("fst"))
+		if(offsets.containsKey(name))
 		{
+			int offset=offsets.get(name);
 			if(value.type!=DataType.INT.ordinal())
 			{
 				throw new ClassCastException();
 			}
 			byte[] buf=toBytes((int)value.value);
-			System.arraycopy(buf,0,obj.data,0,4);
-			return;
-		}
-		if(name.equals("snd"))
-		{
-			if(value.type!=DataType.INT.ordinal())
-			{
-				throw new ClassCastException();
-			}
-			byte[] buf=toBytes((int)value.value);
-			System.arraycopy(buf,0,obj.data,4,4);
+			System.arraycopy(buf,0,obj.data,offset,4);
 			return;
 		}
 		throw new RuntimeException("Illegal member Pair."+name);
@@ -110,5 +99,14 @@ public class Pair extends ClassCode{
 	public long getAddress() {
 		return addr;
 	}
-
+	public static VarEntry getConstant()
+	{
+		return null;
+	}
+	static Map<String,Integer> offsets=new HashMap<String, Integer>();
+	static
+	{
+		offsets.put("fst",0);
+		offsets.put("snd",4);
+	}
 }
