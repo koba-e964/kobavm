@@ -49,14 +49,18 @@ public class CPUTest {
 		long snd=new KString("snd").getAddress();
 		long pair=new Pair(11351,234523).getAddress();
 		byte[] code={
-				0,(byte)snd,(byte)(snd>>8),0,//LDC.im snd.addr ("snd")
-				0,(byte)pair,(byte)(pair>>8),0,//LDC.im pair.addr
+				1,0,0,0,//LDV 0 ("snd")
+				1,1,0,0,//LDV 0 (pair)
 				2,0,0,0,//GETFIELD st0,st1
 
 				-1,0,0,0,//EXIT
 		};
 		mem.load(code, 0x0000);
 		CPU cpu=new CPU(mem);
+		//sets variables
+		cpu.vtable.store(0, new VarEntry(OBJECT.ordinal(),snd));
+		cpu.vtable.store(1, new VarEntry(OBJECT.ordinal(),pair));
+		
 		cpu.run();
 		assertEquals(1,cpu.stack.size());
 		long expected=234523;
