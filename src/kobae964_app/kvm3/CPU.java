@@ -26,11 +26,6 @@ public class CPU {
 		 */
 		final int N=10;
 		this.vtable.allocate(N);
-		for(int i=0;i<N;i++)
-		{
-			this.vtable.store(i, new VarEntry(DataType.INT.ordinal(), i*i));
-		}
-		
 	}
 	void run()
 	{

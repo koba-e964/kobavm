@@ -2,12 +2,12 @@ package kobae964_app.kvm3;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static kobae964_app.kvm3.DataType.*;
 
 
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 public class CPUTest {
@@ -33,6 +33,7 @@ public class CPUTest {
 		};
 		mem.load(code, 0x0000);
 		CPU cpu=new CPU(mem);
+		cpu.vtable.store(3, new VarEntry(DataType.INT.ordinal(),9));//var[3]=9
 		cpu.run();
 		long expected=23*256+1-(100+9);
 		long actual=cpu.stack.getAt(0).value;
@@ -83,7 +84,8 @@ public class CPUTest {
 		assertEquals("fst",actual);
 	}
 	/**
-	 * Test of STV(3) instruction
+	 * Test of
+	 * STV(3) instruction
 	 */
 	@Test
 	public void testSTV0(){
@@ -105,6 +107,39 @@ public class CPUTest {
 		assertEquals(1,cpu.stack.size());
 		assertEquals(13,cpu.stack.getAt(0).value);
 		assertEquals((long)(int)0xffdec79eL,cpu.vtable.load(4).value);
+	}
+	/**
+	 * Test of
+	 * SETFIELD(4) instruction
+	 */
+	@Test
+	public void testSETFIELD(){
+		Mem mem=new Mem(0x10000);
+		//pair.snd=0x1010b7eb
+		long pair=new Pair(23,-1234567890).getAddress();
+		long snd=new KString("snd").getAddress();
+		final long magic=0x1010b7eb;
+		byte[] code={
+				1,2,0,0,//LDV 2->st2(magic)
+				1,1,0,0,//LDV 1->st1(snd)
+				1,0,0,0,//LDV 0->st0(pair)
+				4,0,0,0,//SETFIELD st0 st1 st2
+
+				-1,0,0,0,//EXIT
+		};
+		mem.load(code, 0);
+		CPU cpu=new CPU(mem);
 		
+		//variables
+		cpu.vtable.store(0,new VarEntry(OBJECT.ordinal(), pair));
+		cpu.vtable.store(1,new VarEntry(OBJECT.ordinal(), snd));
+		cpu.vtable.store(2,new VarEntry(INT.ordinal(), magic));
+		
+		//execute
+		cpu.run();
+		
+		//stack:[]
+		assertEquals(0,cpu.stack.size());
+		assertEquals(magic,Pair.createInstanceFromAddress(pair).getField("snd").value);
 	}
 }
