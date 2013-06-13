@@ -41,14 +41,12 @@ public class CPU {
 		case 0://LDC.im
 		{
 			int ar0=code>>8;//signed int
-			System.out.println("LDC.im "+ar0);
 			stack.pushInt(ar0);
 			break;
 		}
 		case 1://LDV
 		{
 			int ar0=code>>>8;//unsigned
-			System.out.println("LDV "+ar0);
 			VarEntry cont=vtable.load(ar0);
 			stack.push(cont);
 			break;
@@ -58,9 +56,7 @@ public class CPU {
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
 			int type=st1.type&TYPE_MASK;
-			System.out.println("type="+type);
 			String name=KString.getContent(st1.value);
-			System.out.printf("GETFIELD st0=%d st1=%s\n",st0.value,name);
 			//checking if st0.type-=OBJECT.ordinal() is necessary but now omitted for convenience
 			VarEntry res=ClassLoader.getField(st0.value,name);
 			stack.push(res);
@@ -70,7 +66,6 @@ public class CPU {
 		{
 			VarEntry st0=stack.pop();
 			int ar0=code>>>8;//unsigned
-			System.out.println("STV st0="+st0.value+" ar0="+ar0);
 			vtable.store(ar0,st0);
 			break;
 		}
@@ -81,7 +76,6 @@ public class CPU {
 			VarEntry st2=stack.pop();
 			int type=st1.type&TYPE_MASK;
 			String name=KString.getContent(st1.value);
-			System.out.printf("SETFIELD st0=%d st1=%s st2=%d\n",st0.value,name,st2.value);
 			if(type!=DataType.OBJECT.ordinal())
 			{
 				//throw new IllegalStateException();
@@ -168,7 +162,6 @@ public class CPU {
 		default:
 			throw new RuntimeException("Invalid Code");
 		}
-		System.out.println("callstack="+stack);
 		return 0;
 	}
 	public void call(int addr)
