@@ -35,7 +35,7 @@ public class ClassData {
 	public VarEntry getField(KVMObject obj,String name)
 	{
 		ClassCode inst;
-		inst = getClassCodeInstance(obj);
+		inst=getClassCodeInstance(obj);
 		return inst.getField(name);
 	}
 	private ClassCode getClassCodeInstance(KVMObject obj) {
@@ -51,7 +51,9 @@ public class ClassData {
 	}
 	public void setField(KVMObject obj,String name,VarEntry v)
 	{
-		System.out.println("SetField "+name+"<-"+v+" in "+this.name);		
+		ClassCode inst;
+		inst=getClassCodeInstance(obj);
+		inst.setField(name,v);
 	}
 	public VarEntry getConstant(int id)
 	{
