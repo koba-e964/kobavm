@@ -2,7 +2,6 @@ package kobae964_app.kvm3;
 
 import static kobae964_app.kvm3.Flags.*;
 import kobae964_app.kvm3.inline.KString;
-import kobae964_app.kvm3.inline.Pair;
 
 public class CPU {
 	Mem mem;
@@ -21,6 +20,7 @@ public class CPU {
 		this.stack=new CallStack();
 		this.vtable=new VariableTable();
 		this.loader=new ClassLoader();
+		this.classID=-1;//invalid
 		/*
 		 * for tests
 		 */

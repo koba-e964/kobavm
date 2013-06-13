@@ -12,8 +12,8 @@ public class ClassLoader {
 	static int count=0;
 	static
 	{
-		registerClass("String",KString.class);
-		registerClass("Pair",Pair.class);
+		registerClass(KString.CLASS_NAME,KString.class);
+		registerClass(Pair.CLASS_NAME,Pair.class);
 	}
 	static public int registerClass(String name)
 	{

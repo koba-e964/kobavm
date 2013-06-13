@@ -25,7 +25,7 @@ public class KString extends ClassCode{
 	}
 	public KString(String str)
 	{
-		int clzId=ClassLoader.getClassID("String");
+		int clzId=ClassLoader.getClassID(CLASS_NAME);
 		addr=Heap.create(clzId,str.getBytes(),Flags.CONSTOBJ);
 		var=Heap.retrieve(addr);
 		cont=str;
@@ -51,7 +51,7 @@ public class KString extends ClassCode{
 		KString inst=new KString();
 		inst.addr=addr;
 		inst.var=Heap.retrieve(addr);
-		if(inst.var.getClassID()!=ClassLoader.getClassID("String"))
+		if(inst.var.getClassID()!=ClassLoader.getClassID(CLASS_NAME))
 		{
 			throw new IllegalArgumentException("Invalid type (addr="+addr+")");
 		}
@@ -101,4 +101,8 @@ public class KString extends ClassCode{
 	{
 		return KString.createInstanceFromAddress(addr).getContent();
 	}
+	/**
+	 * The internal name of this class.
+	 */
+	public static final String CLASS_NAME="String";
 }

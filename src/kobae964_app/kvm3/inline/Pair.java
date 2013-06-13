@@ -9,10 +9,14 @@ import kobae964_app.kvm3.ClassLoader;
 
 public class Pair extends ClassCode{
 	private long addr;
+	/**
+	 * size of int32(fst, snd)
+	 */
+	static final int INT_SIZE=4;
 	static byte[] toBytes(int v)
 	{
-		byte[] out=new byte[4];
-		for(int i=0;i<4;i++)
+		byte[] out=new byte[INT_SIZE];
+		for(int i=0;i<INT_SIZE;i++)
 		{
 			out[i]=(byte)v;
 			v>>>=8;
@@ -34,9 +38,9 @@ public class Pair extends ClassCode{
 	public Pair(int fst,int snd)
 	{
 		int clzID=ClassLoader.getClassID("Pair");
-		byte[] data=new byte[8];
-		System.arraycopy(toBytes(fst), 0, data, 0, 4);
-		System.arraycopy(toBytes(snd), 0, data, 4, 4);
+		byte[] data=new byte[2*INT_SIZE];
+		System.arraycopy(toBytes(fst), 0, data, 0, INT_SIZE);
+		System.arraycopy(toBytes(snd), 0, data, INT_SIZE, INT_SIZE);
 		addr=Heap.create(clzID, data, 0);
 	}
 	/**
@@ -66,8 +70,8 @@ public class Pair extends ClassCode{
 		if(offsets.containsKey(name))
 		{
 			int offset=offsets.get(name);
-			byte[] buf=new byte[4];
-			System.arraycopy(obj.data,offset,buf,0,4);
+			byte[] buf=new byte[INT_SIZE];
+			System.arraycopy(obj.data,offset,buf,0,INT_SIZE);
 			return new VarEntry(DataType.INT.ordinal(),toInt(buf));
 		}
 		return null;
@@ -84,7 +88,7 @@ public class Pair extends ClassCode{
 				throw new ClassCastException();
 			}
 			byte[] buf=toBytes((int)value.value);
-			System.arraycopy(buf,0,obj.data,offset,4);
+			System.arraycopy(buf,0,obj.data,offset,INT_SIZE);
 			return;
 		}
 		throw new RuntimeException("Illegal member Pair."+name);
@@ -121,10 +125,14 @@ public class Pair extends ClassCode{
 	static
 	{
 		offsets.put("fst",0);
-		offsets.put("snd",4);
+		offsets.put("snd",INT_SIZE);
 		cpool=new long[3];
 		cpool[0]=new KString("fst").getAddress();
 		cpool[1]=new KString("snd").getAddress();
 		cpool[2]=new Pair(0, 0).getAddress();
 	}
+	/**
+	 * The internal name of this class.
+	 */
+	public static final String CLASS_NAME="Pair";
 }
