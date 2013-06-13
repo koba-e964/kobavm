@@ -1,7 +1,7 @@
 package kobae964_app.kvm3;
 
-import static kobae964_app.kvm3.Flags.*;
 import kobae964_app.kvm3.inline.KString;
+import static kobae964_app.kvm3.DataType.*;
 
 public class CPU {
 	Mem mem;
@@ -55,9 +55,8 @@ public class CPU {
 		{
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
-			int type=st1.type&TYPE_MASK;
 			String name=KString.getContent(st1.value);
-			//checking if st0.type-=OBJECT.ordinal() is necessary but now omitted for convenience
+			st0.checkDataType(OBJECT);
 			VarEntry res=ClassLoader.getField(st0.value,name);
 			stack.push(res);
 			break;
@@ -71,16 +70,12 @@ public class CPU {
 		}
 		case 4://SETFIELD
 		{
-			VarEntry st0=stack.pop();
-			VarEntry st1=stack.pop();
-			VarEntry st2=stack.pop();
-			int type=st1.type&TYPE_MASK;
+			VarEntry st0=stack.pop();//object whose member is assigned to
+			VarEntry st1=stack.pop();//name of member
+			VarEntry st2=stack.pop();//value that is assigned to member
+			st1.checkDataType(OBJECT);
 			String name=KString.getContent(st1.value);
-			if(type!=DataType.OBJECT.ordinal())
-			{
-				//throw new IllegalStateException();
-				//omitted for convenience
-			}
+			st0.checkDataType(OBJECT);
 			ClassLoader.setField(st0.value, name, st2);
 			break;
 		}

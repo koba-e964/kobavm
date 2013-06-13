@@ -22,4 +22,15 @@ public class VarEntry implements Cloneable{
 	{
 		return "("+DataType.values()[type&Flags.TYPE_MASK].name()+", "+value+")";
 	}
+	/**
+	 * Checks if type of this is {@code type}.
+	 * If so, this method does nothing.
+	 * Otherwise, this will throw an {@link RuntimeException}.
+	 * @param type Type
+	 */
+	public void checkDataType(DataType type){
+		if((this.type&Flags.TYPE_MASK)!=type.ordinal()){
+			throw new RuntimeException(this+" is not "+type);
+		}
+	}
 }
