@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import kobae964_app.kvm3.inline.KString;
 
+import static kobae964_app.kvm3.DataType.*;
+
 public class CallStack {
 	public CallStack()
 	{
@@ -61,75 +63,39 @@ public class CallStack {
 	public double popReal()
 	{
 		VarEntry result=pop();
-		int a=result.type;
-		if(a!=DataType.REAL.ordinal())
-		{
-			throw new IllegalStateException("REAL was required, but "+DataType.values()[a]+" returned");
-		}
+		checkDataType(result, REAL);
 		return Double.longBitsToDouble(result.value);
 	}
 	public long popInt()
 	{
 		VarEntry result=pop();
-		int a=result.type;
-		if(a!=DataType.INT.ordinal())
-		{
-			throw new IllegalStateException("INT was required, but "+DataType.values()[a]+" returned");
-		}
+		checkDataType(result, INT);
 		return result.value;
 	}
 	public boolean popBool()
 	{
 		VarEntry result=pop();
-		int a=result.type;
-		if(a!=DataType.BOOL.ordinal())
-		{
-			throw new IllegalStateException("BOOL was required, but "+DataType.values()[a]+" returned");
-		}
+		checkDataType(result, BOOL);
 		return result.value!=0;
 	}
 	public String popString()
 	{
 		VarEntry result=pop();
-		int a=result.type;
-		if(/*a!=DataType.STRING.ordinal()&&*/a!=DataType.OBJECT.ordinal())
-		{
-			throw new IllegalStateException("STRING was required, but "+DataType.values()[a]+" returned");
-		}
-		long value=result.value;
-		if(a==DataType.OBJECT.ordinal())
-		{
-			KVMObject ret=Heap.retrieve(value);
-			return new String(ret.data);
-		}
-		throw new IllegalStateException();
-		/*
-		char[] tmp=new char[4];
-		int i=0;
-		for(;i<4&&value!=0;i++)
-		{
-			tmp[i]=(char)value;
-			value>>>=16;
-		}
-		return new String(tmp).substring(0, i);
-		*/
+		checkDataType(result,OBJECT);
+		long addr=result.value;
+		return KString.getContent(addr);
 	}
 	public KVMObject popObject()
 	{
 		VarEntry result=pop();
-		int a=result.type;
-		if(a!=DataType.OBJECT.ordinal())
-		{
-			throw new IllegalStateException("OBJECT was required, but "+DataType.values()[a]+" returned");
-		}
+		checkDataType(result,OBJECT);
 		long value=result.value;
 		KVMObject ret=Heap.retrieve(value);
 		return ret;
 	}
 	private List<Integer> data;
 	@Override
-	public String toString()
-	{
+	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		sb.append('[');
 		for(int i=0,s=this.size();i<s;i++)
@@ -142,6 +108,7 @@ public class CallStack {
 	}
 	public VarEntry getAt(int index)
 	{
+		checkIndex(index);
 		int size_3=data.size()-3;
 		int type=data.get(size_3-3*index);
 		long value=data.get(size_3-3*index+1);
@@ -150,14 +117,25 @@ public class CallStack {
 	}
 	public void setAt(int index,VarEntry ve)
 	{
+		checkIndex(index);
 		int size_3=data.size()-3;
 		data.set(size_3-3*index,ve.type);
 		data.set(size_3-3*index+1,(int)ve.value);
 		data.set(size_3-3*index+2,(int)(ve.value>>>32L));
 	}
-	public int size()
-	{
+	private void checkIndex(int index){
+		if(index<0||3*index>=data.size()){
+			throw new RuntimeException("Index is out of stack:"+index+" in "+"[0, "+size()+")");
+		}
+	}
+	public int size(){
 		return data.size()/3;
+	}
+	private void checkDataType(VarEntry val,DataType type){
+		int a=val.type;
+		if(a!=type.ordinal()){
+			throw new IllegalStateException(type+" was required, but "+DataType.values()[a]+" returned");
+		}
 	}
 	public static void main(String [] args)
 	{
