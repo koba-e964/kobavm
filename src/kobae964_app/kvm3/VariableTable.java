@@ -32,4 +32,7 @@ public class VariableTable {
 	{
 		current[ind]=var;
 	}
+	public int size(){
+		return current.length;
+	}
 }
