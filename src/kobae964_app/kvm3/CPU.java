@@ -45,14 +45,30 @@ public class CPU {
 			stack.pushInt(ar0);
 			break;
 		}
-		case 1://LDV
+		case 1://LDC.cp st0 ar0
+		{
+			VarEntry st0=stack.pop();
+			String clzName=KString.getContent(st0.value);
+			int ar0=code>>>8;//unsigned
+			VarEntry result=ClassLoader.getConstant(ClassLoader.getClassID(clzName), ar0);
+			stack.push(result);
+			break;
+		}
+		case 2://LDC.cp.cur ar0
+		{
+			int ar0=code>>>8;//unsigned
+			VarEntry result=ClassLoader.getConstant(classID, ar0);
+			stack.push(result);
+			break;
+		}
+		case 3://LDV
 		{
 			int ar0=code>>>8;//unsigned
 			VarEntry cont=vtable.load(ar0);
 			stack.push(cont);
 			break;
 		}
-		case 2://GETFIELD
+		case 4://GETFIELD
 		{
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
@@ -62,14 +78,14 @@ public class CPU {
 			stack.push(res);
 			break;
 		}
-		case 3://STV
+		case 5://STV
 		{
 			VarEntry st0=stack.pop();
 			int ar0=code>>>8;//unsigned
 			vtable.store(ar0,st0);
 			break;
 		}
-		case 4://SETFIELD
+		case 6://SETFIELD
 		{
 			VarEntry st0=stack.pop();//object whose member is assigned to
 			VarEntry st1=stack.pop();//name of member
@@ -80,14 +96,14 @@ public class CPU {
 			ClassLoader.setField(st0.value, name, st2);
 			break;
 		}
-		case 5://DUP
+		case 7://DUP
 		{
 			int ar0=code>>>8;
 			VarEntry ve=stack.getAt(ar0);
 			stack.push(ve.clone());
 			break;
 		}
-		case 6://SWAP
+		case 8://SWAP
 		{
 			int ar0=(code>>>8)&0xfff;//unsigned
 			int ar1=(code>>>20)&0xfff;
@@ -97,28 +113,28 @@ public class CPU {
 			stack.setAt(ar1,ve1);
 			break;
 		}
-		case 7://ADD
+		case 9://ADD
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1+val2);
 			break;
 		}
-		case 8://SUB
+		case 10://SUB
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1-val2);
 			break;
 		}
-		case 9://MUL
+		case 11://MUL
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1*val2);
 			break;
 		}
-		case 10://DIV
+		case 12://DIV
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
@@ -126,38 +142,22 @@ public class CPU {
 			stack.pushInt(val1%val2);
 			break;
 		}
-		case 11://CALL ar0
+		case 13://CALL ar0
 		{
 			int ar0=code>>8;//signed
 			int dest=pc+ar0;
 			call(dest);
 			break;
 		}
-		case 13://JMP
+		case 16://JMP
 		{
 			int ar0=code>>8;//signed
 			pc+=ar0;
 			break;
 		}
-		case 14://ret
+		case 17://ret
 		{
 			ret();
-			break;
-		}
-		case 16://LDC.cp st0 ar0
-		{
-			VarEntry st0=stack.pop();
-			String clzName=KString.getContent(st0.value);
-			int ar0=code>>>8;//unsigned
-			VarEntry result=ClassLoader.getConstant(ClassLoader.getClassID(clzName), ar0);
-			stack.push(result);
-			break;
-		}
-		case 32://LDC.cp.cur ar0
-		{
-			int ar0=code>>>8;//unsigned
-			VarEntry result=ClassLoader.getConstant(classID, ar0);
-			stack.push(result);
 			break;
 		}
 		case 0x3f://EXIT
