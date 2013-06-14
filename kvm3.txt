@@ -62,6 +62,16 @@ RET
 (6)比較/分岐
  CMP.lt st0 st1(code=0x12):整数st0とst1に対し、st0<st1であればtrueを積む
  CMP.eq st0 st1 (code=0x13):st0とst1が同じ種類(int,real,object,bool)の値であり、等しければtrueを積む
- NOT st0(code=0x14):bool値st0の値を反転して積む
 (7)ビット演算
- 
+ AND.i st0 st1(code=0x14):整数st0とst1に対し、st0&st1を積む。
+ OR.i st0 st1(code=0x15):整数st0とst1に対し、st0|st1を積む。
+ XOR.i st0 st1(code=0x16):整数st0とst1に対し、st0^st1を積む。
+ NOT.i st0(code=0x17):整数st0に対し、~st0を積む。
+ AND.b st0 st1(code=0x18):bool値st0とst1に対し、st0&st1を積む。
+ OR.b st0 st1(code=0x19):bool値st0とst1に対し、st0|st1を積む。
+ XOR.b st0 st1(code=0x1a):bool値st0とst1に対し、st0^st1を積む。
+ NOT.b st0(code=0x1b):bool値st0に対し、!st0を積む
+ SHL st0 st1(code=0x1c):整数st0とst1に対し、st0<<(st1%64)を積む。
+ SHR st0 st1(code=0x1d):整数st0とst1に対し、st0>>>(st1%64)を積む。(符号なし)
+ SAR st0 st1(code=0x1e):整数st0とst1に対し、st0>>(st1%64)を積む。(符号付き)
+
