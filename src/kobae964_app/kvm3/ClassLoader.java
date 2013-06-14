@@ -3,6 +3,7 @@ package kobae964_app.kvm3;
 import java.util.HashMap;
 import java.util.Map;
 
+import kobae964_app.kvm3.inline.Init;
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
@@ -10,10 +11,10 @@ public class ClassLoader {
 	static Map<String, Integer> table=new HashMap<String, Integer>();
 	static Map<Integer,ClassData> dat=new HashMap<Integer,ClassData>();
 	static int count=0;
-	static
-	{
+	static{
 		registerClass(KString.CLASS_NAME,KString.class);
 		registerClass(Pair.CLASS_NAME,Pair.class);
+		registerClass(Init.CLASS_NAME,Init.class);
 	}
 	static public int registerClass(String name)
 	{

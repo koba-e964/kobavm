@@ -30,6 +30,7 @@ public abstract class ClassCode {
 	 */
 	public static VarEntry getConstant(int id)
 	{
+		System.err.println("Error: ClassCode.getConstant(int) was called.\nIt seems that getConstant(int) is not overrided in subclass.");
 		return new VarEntry(DataType.OBJECT.ordinal(),Heap.NULL_ADDR);//NULL reference
 	}
 }

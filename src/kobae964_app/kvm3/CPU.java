@@ -1,5 +1,6 @@
 package kobae964_app.kvm3;
 
+import kobae964_app.kvm3.inline.Init;
 import kobae964_app.kvm3.inline.KString;
 import static kobae964_app.kvm3.DataType.*;
 
@@ -20,7 +21,7 @@ public class CPU {
 		this.stack=new CallStack();
 		this.vtable=new VariableTable();
 		this.loader=new ClassLoader();
-		this.classID=-1;//invalid
+		this.classID=ClassLoader.getClassID(Init.CLASS_NAME);
 		/*
 		 * for tests
 		 */
@@ -36,7 +37,7 @@ public class CPU {
 		int code=mem.getDword(pc);
 		pc+=4;
 		//TODO build machine code
-		switch(code%32)
+		switch(code%64)
 		{
 		case 0://LDC.im
 		{
@@ -152,7 +153,14 @@ public class CPU {
 			stack.push(result);
 			break;
 		}
-		case 0x1f://EXIT
+		case 32://LDC.cp.cur ar0
+		{
+			int ar0=code>>>8;//unsigned
+			VarEntry result=ClassLoader.getConstant(classID, ar0);
+			stack.push(result);
+			break;
+		}
+		case 0x3f://EXIT
 			return -1;
 		default:
 			throw new RuntimeException("Invalid Code");

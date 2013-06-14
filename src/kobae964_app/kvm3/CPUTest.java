@@ -146,4 +146,26 @@ public class CPUTest {
 		assertEquals(0,cpu.stack.size());
 		assertEquals(magic,Pair.createInstanceFromAddress(pair).getField("snd").value);
 	}
+	/**
+	 * Test of
+	 * LDC.im.cur
+	 */
+	@Test
+	public void testLDCimcur(){
+		Mem mem=new Mem(0x10000);
+		byte[] code={
+				32,1,0,0,//LDC.im.cur 1
+
+				-1,0,0,0,//EXIT
+		};
+		mem.load(code, 0);
+		CPU cpu=new CPU(mem);
+		
+		//execute
+		cpu.run();
+		
+		//stack:[(s)]
+		assertEquals(1,cpu.stack.size());
+		System.out.println(cpu.stack);
+	}
 }

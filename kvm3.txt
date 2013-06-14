@@ -15,6 +15,7 @@ LD? 指定した値をスタックに積む。変数または定数を積む。
 LDC 定数を積む。(定数プールから、あるいは直接)
  LDC.im ar0 (code=ar0<<8|0):整数ar0を積む(ar0は-0x800000以上0x7fffff以下の整数)
  LDC.cp st0 ar0 (code=ar0<<8|0x10):st0(string)で指定したクラス内の定数プールのar0番のデータ(int,real,string,objectなど)を積む。(ar0は0xffffff以下のindexだが、そこまで大きくなることは無いはず)
+　LDC.cp.cur ar0 (code~ar0<<8|0x20):CPUが現在実行しているクラスの定数プールからLDC.cpと同じことをする。
  //LDC.re st0 ar0 (code=ar0<<8|0x20):定数プールの(st0+ar0)番の(型問わず)を積む。(st0は整数、ar0は-0x800000以上0x7fffff以下の整数)
  //LDC,reは比較的使われない方だろう。しいて言えばswitchのジャンプ先のテーブルとして使えるくらいかな
 LDV 変数を積む。(変数用スタックから)
@@ -65,4 +66,5 @@ RET
  CMP.lt st0 st1(code=0xe):整数st0とst1に対し、st0<st1であればtrueを積む
  CMP.eq st0 st1 (code=0xf):st0とst1が同じ種類(int,real,object,bool)の値であり、等しければtrueを積む
  NOT st0(code=0x10):bool値st0の値を反転して積む
+(7)ビット演算
  
