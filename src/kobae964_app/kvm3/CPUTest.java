@@ -24,10 +24,10 @@ public class CPUTest {
 		Mem mem=new Mem(0x10000);
 		byte[] code={
 				0,100,0,0,//LDC.im 100
-				1,3,0,0,//LDV var[3](=9)
-				7,0,0,0,//ADD st0,st1
+				3,3,0,0,//LDV var[3](=9)
+				9,0,0,0,//ADD st0,st1
 				0,1,23,0,//LDC.im 23*256+1
-				8,0,0,0,//SUB st0,st1
+				10,0,0,0,//SUB st0,st1
 
 				-1,0,0,0,//EXIT
 		};
@@ -49,9 +49,9 @@ public class CPUTest {
 		long snd=new KString("snd").getAddress();
 		long pair=new Pair(11351,234523).getAddress();
 		byte[] code={
-				1,0,0,0,//LDV 0 ("snd")
-				1,1,0,0,//LDV 0 (pair)
-				2,0,0,0,//GETFIELD st0,st1
+				3,0,0,0,//LDV 0 ("snd")
+				3,1,0,0,//LDV 0 (pair)
+				4,0,0,0,//GETFIELD st0,st1
 
 				-1,0,0,0,//EXIT
 		};
@@ -76,7 +76,7 @@ public class CPUTest {
 		long pair=new KString("Pair").getAddress();
 		byte[] code={
 				0,(byte)pair,(byte)(pair>>8),0,//LDC.im pair.addr
-				16,0,0,0,//LDC.cp st0,ar0=0
+				1,0,0,0,//LDC.cp st0,ar0=0
 
 				-1,0,0,0,//EXIT
 		};
@@ -97,7 +97,7 @@ public class CPUTest {
 		byte[] code={
 				0,13,0,0,//LDC.im 13
 				0,(byte)0x9e,(byte)0xc7,(byte)0xde,//LDC.im 0xffdec79e-(1L<<32)
-				3,4,0,0,//STV st0 ar0=4, in CPU.CPU(Mem), it is ensured that variable table has space for 10 variable
+				5,4,0,0,//STV st0 ar0=4, in CPU.CPU(Mem), it is ensured that variable table has space for 10 variable
 
 				-1,0,0,0,//EXIT
 		};
@@ -124,10 +124,10 @@ public class CPUTest {
 		long snd=new KString("snd").getAddress();
 		final long magic=0x1010b7eb;
 		byte[] code={
-				1,2,0,0,//LDV 2->st2(magic)
-				1,1,0,0,//LDV 1->st1(snd)
-				1,0,0,0,//LDV 0->st0(pair)
-				4,0,0,0,//SETFIELD st0 st1 st2
+				3,2,0,0,//LDV 2->st2(magic)
+				3,1,0,0,//LDV 1->st1(snd)
+				3,0,0,0,//LDV 0->st0(pair)
+				6,0,0,0,//SETFIELD st0 st1 st2
 
 				-1,0,0,0,//EXIT
 		};
@@ -154,7 +154,7 @@ public class CPUTest {
 	public void testLDCimcur(){
 		Mem mem=new Mem(0x10000);
 		byte[] code={
-				32,1,0,0,//LDC.im.cur 1
+				2,1,0,0,//LDC.im.cur 1
 
 				-1,0,0,0,//EXIT
 		};
