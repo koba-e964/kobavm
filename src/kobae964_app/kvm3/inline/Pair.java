@@ -37,7 +37,7 @@ public class Pair extends ClassCode{
 	private Pair(){}
 	public Pair(int fst,int snd)
 	{
-		int clzID=ClassLoader.getClassID("Pair");
+		int clzID=ClassLoader.getClassID(CLASS_NAME);
 		byte[] data=new byte[2*INT_SIZE];
 		System.arraycopy(toBytes(fst), 0, data, 0, INT_SIZE);
 		System.arraycopy(toBytes(snd), 0, data, INT_SIZE, INT_SIZE);
