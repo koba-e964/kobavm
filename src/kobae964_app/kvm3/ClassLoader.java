@@ -11,10 +11,14 @@ public class ClassLoader {
 	static Map<String, Integer> table=new HashMap<String, Integer>();
 	static Map<Integer,ClassData> dat=new HashMap<Integer,ClassData>();
 	static int count=0;
+	static Mem mem;
 	static{
 		registerClass(KString.CLASS_NAME,KString.class);
 		registerClass(Pair.CLASS_NAME,Pair.class);
 		registerClass(Init.CLASS_NAME,Init.class);
+	}
+	public static void setMem(Mem mem){
+		ClassLoader.mem=mem;
 	}
 	static public int registerClass(String name)
 	{
