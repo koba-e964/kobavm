@@ -10,9 +10,9 @@ public class ClassData {
 	Class<? extends ClassCode> codeClz;
 	/**
 	 * This constructor should be called only from ClassLoader.
-	 * @param id
-	 * @param isConstObj
-	 * @param name
+	 * @param id classID
+	 * @param isConstObj not used.
+	 * @param name the name of class.
 	 */
 	ClassData(int id,boolean isConstObj,String name,Class<? extends ClassCode> codeClz)
 	{
@@ -20,10 +20,14 @@ public class ClassData {
 		this.name=name;
 		this.codeClz=codeClz;
 	}
+	ClassData(int id,String name,BinaryClassData bdat,int codePlace,int dataPlace){
+		
+	}
 	public int classID()
 	{
 		return idAttr/4;
 	}
+	@Deprecated
 	public boolean isConstObj()
 	{
 		return idAttr%4==Flags.CONSTOBJ/16;

@@ -11,6 +11,11 @@ public class ClassLoader {
 	static Map<String, Integer> table=new HashMap<String, Integer>();
 	static Map<Integer,ClassData> dat=new HashMap<Integer,ClassData>();
 	static int count=0;
+	/**
+	 * memory [0,free) is regarded to be allocated.
+	 * This allocating system needs improvement.
+	 */
+	static int free=0;
 	static Mem mem;
 	static{
 		registerClass(KString.CLASS_NAME,KString.class);
@@ -32,6 +37,17 @@ public class ClassLoader {
 		table.put(name,count);
 		ClassData cd=new ClassData(count, false,name,clz);
 		dat.put(count,cd);
+		return count++;
+	}
+	public static int registerClassWithBinary(String name,BinaryClassData dat,Mem mem){
+		table.put(name, count);
+		//loading
+		int codesize=dat.code.length;
+		mem.load(dat.code, free);
+		//TODO:constant pool
+		ClassData cd=new ClassData(count,name,dat,free,-1);
+		ClassLoader.dat.put(count,cd);
+		free+=codesize;
 		return count++;
 	}
 	static public int getClassID(String name)
@@ -81,5 +97,9 @@ public class ClassLoader {
 	public static VarEntry getConstant(int classID,int id)
 	{
 		return getClassData(classID).getConstant(id);
+	}
+	public static int loadCode(byte[] code){
+		//TODO
+		throw new RuntimeException();
 	}
 }

@@ -179,4 +179,9 @@ public class CPU {
 		vtable.deallocate();
 		pc=(int)a;
 	}
+	public static final int LDCim=0,
+			LDCcp=1,
+			LDCcpcur=2,
+			LDV=3,
+			RET=17;
 }
