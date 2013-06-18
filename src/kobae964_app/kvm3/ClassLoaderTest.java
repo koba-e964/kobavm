@@ -22,6 +22,16 @@ public class ClassLoaderTest {
 		ClassData cdat=ClassLoader.getClassData(name);
 		assertTrue(cdat.hasVMCode("test.I"));
 		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],cdat.getVMCodeAddress("test.I"));
+		boolean ok=false;
+		try{
+			cdat.getVMCodeAddress("randomNameThatIsNotDefined");
+		}catch(RuntimeException ex){
+			ok=true;//ok
+		}finally{
+			assertTrue(ok);
+		}
+		assertTrue(cdat.fieldTable.isEmpty());
+		System.out.println(cdat.methodTable);
 	}
 	/**
 	 * Test of {@link ClassLoader#registerClassWithBinary(String, BinaryClassData, Mem)}.
