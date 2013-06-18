@@ -160,7 +160,7 @@ public class CPU {
 		{
 			String className=stack.popString();
 			String methodName=stack.popString();
-			ClassLoader.getClassData(className);
+			ClassLoader.getClassData(className).call(methodName, Heap.NULL_ADDR);
 		}
 		case 16://JMP
 		{
