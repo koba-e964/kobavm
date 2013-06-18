@@ -59,6 +59,19 @@ public class ClassData {
 		inst=getClassCodeInstance(obj);
 		inst.setField(name,v);
 	}
+	/**
+	 * 
+	 * @param name The name of method.
+	 * @param addr address of instance. If the method is statically called, addr should be {@link Heap#NULL_ADDR}. 
+	 * @param args Arguments.
+	 * @return returned value of the method. If the type of returned type of the method is void,
+	 * this method returns null.
+	 * 
+	 */
+	public VarEntry call(String name,long addr,VarEntry... args){
+		//TODO
+		return null;
+	}
 	public VarEntry getConstant(int id)
 	{
 		VarEntry res;

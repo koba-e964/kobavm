@@ -8,6 +8,10 @@ public class VarEntry implements Cloneable{
 		this.type=type;
 		this.value=value;
 	}
+	public VarEntry(DataType type,long value){
+		this.type=type.ordinal();
+		this.value=value;
+	}
 	@Override
 	public VarEntry clone()
 	{

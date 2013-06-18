@@ -156,6 +156,12 @@ public class CPU {
 			call(dest);
 			break;
 		}
+		case 14://CALL.st st0 st1
+		{
+			String className=stack.popString();
+			String methodName=stack.popString();
+			ClassLoader.getClassData(className);
+		}
 		case 16://JMP
 		{
 			int ar0=code>>8;//signed

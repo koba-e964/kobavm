@@ -2,6 +2,8 @@ package kobae964_app.kvm3;
 
 import static org.junit.Assert.*;
 import static kobae964_app.kvm3.CPU.*;
+import static kobae964_app.kvm3.DataType.*;
+import kobae964_app.kvm3.inline.KString;
 
 import org.junit.Test;
 
@@ -14,23 +16,28 @@ public class ClassLoaderTest {
 	@Test
 	public void testRegisterClassWithBinary0() {
 		final String name="TestClass";
+		final String methodName="test.I";
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
-		BinaryClassData dat=new BinaryClassData();
-		dat.code=new byte[]{
-			LDCim,2,0,0,//LDC.im 2
-			RET,0,0,0,//RET :return 2
-		};
-		dat.constPool=new Object[0];
-		dat.fieldNames=new String[0];
-		dat.fieldOffsets=new int[0];
-		dat.fieldSigns=new String[0];
-		dat.methodNames=new String[]{"test"};
-		dat.methodOffsets=new int[]{0};
-		dat.methodSigns=new String[]{"I"};//func(int)
 		ClassLoader.setMem(mem);
-		int id=ClassLoader.registerClassWithBinary(name, dat);
-		System.out.println("id("+name+")="+id);
+		//registers TestClass with ClassLoader
+		{
+			int id;
+			BinaryClassData dat=new BinaryClassData();
+			dat.code=new byte[]{
+					LDCim,2,0,0,//LDC.im 2
+					RET,0,0,0,//RET :return 2
+			};
+			dat.constPool=new Object[0];
+			dat.fieldNames=new String[0];
+			dat.fieldOffsets=new int[0];
+			dat.fieldSigns=new String[0];
+			dat.methodNames=new String[]{"test"};
+			dat.methodOffsets=new int[]{0};
+			dat.methodSigns=new String[]{"I"};//func(int)
+			id=ClassLoader.registerClassWithBinary(name, dat);
+			System.out.println("id("+name+")="+id);
+		}
 		byte[] code={
 			LDV,1,0,0,//var1:"test.I"
 			LDV,0,0,0,//var0:"TestClass"
@@ -40,6 +47,13 @@ public class ClassLoaderTest {
 		};
 		int mainCode=ClassLoader.loadCode(code);
 		System.out.println("mainCode was loaded at "+mainCode+"~"+(mainCode+code.length));
+
+		//setting variables
+		{
+			cpu.vtable.store(0, new VarEntry(OBJECT,new KString(name).getAddress()));
+			cpu.vtable.store(1, new VarEntry(OBJECT,new KString(methodName).getAddress()));
+		}
+
 		cpu.pc=mainCode;
 		cpu.run();
 		//stack:[int:2]
