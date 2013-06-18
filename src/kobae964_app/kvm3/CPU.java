@@ -158,9 +158,15 @@ public class CPU {
 		}
 		case 14://CALL.st st0 st1
 		{
+			int ar0=code>>>8;//number of arguments
 			String className=stack.popString();
 			String methodName=stack.popString();
-			ClassLoader.getClassData(className).call(methodName, Heap.NULL_ADDR);
+			VarEntry[] args=new VarEntry[ar0];
+			for(int i=0;i<ar0;i++){
+				args[i]=stack.pop();
+			}
+			ClassLoader.getClassData(className).call(methodName, Heap.NULL_ADDR,args);
+			break;
 		}
 		case 16://JMP
 		{

@@ -11,7 +11,7 @@ public class ClassLoaderTest {
 
 	/**
 	 * Test of {@link ClassLoader#registerClassWithBinary(String, BinaryClassData, Mem)}.
-	 * public int test(){return 2;}
+	 * public int test(int val){return 2;}
 	 */
 	@Test
 	public void testRegisterClassWithBinary0() {
@@ -39,9 +39,10 @@ public class ClassLoaderTest {
 			System.out.println("id("+name+")="+id);
 		}
 		byte[] code={
+			LDCim,0,0,0,//LDC.im 0
 			LDV,1,0,0,//var1:"test.I"
 			LDV,0,0,0,//var0:"TestClass"
-			0xe,0,0,0,//CALL.st st0,st1
+			0xe,1,0,0,//CALL.st st0 st1 st2, ar0=1
 
 			-1,0,0,0,//exit
 		};
