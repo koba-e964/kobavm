@@ -165,7 +165,14 @@ public class CPU {
 			for(int i=0;i<ar0;i++){
 				args[i]=stack.pop();
 			}
-			ClassLoader.getClassData(className).call(Heap.NULL_ADDR, methodName,args);
+			ClassData dat=ClassLoader.getClassData(className);
+			if(dat.hasVMCode(methodName))
+			{
+				int addr=dat.getVMCodeAddress(methodName);
+				call(addr);
+			}else{
+				dat.call(Heap.NULL_ADDR, methodName,args);
+			}
 			break;
 		}
 		case 16://JMP
@@ -176,7 +183,8 @@ public class CPU {
 		}
 		case RET://ret
 		{
-			ret();
+			boolean hasRetVal=(code>>>8)!=0;
+			ret(hasRetVal);
 			break;
 		}
 		case 0x3f://EXIT
@@ -192,9 +200,16 @@ public class CPU {
 		vtable.allocate(100);//actual value should be recalled from classData
 		pc=addr;
 	}
-	public void ret()
+	public void ret(boolean hasRetVal)
 	{
+		VarEntry retVal=null;
+		if(hasRetVal){
+			retVal=stack.pop();
+		}
 		long a=stack.popInt();
+		if(hasRetVal){
+			stack.push(retVal);
+		}
 		vtable.deallocate();
 		pc=(int)a;
 	}

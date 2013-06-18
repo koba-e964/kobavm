@@ -75,7 +75,7 @@ public class ClassLoaderTest {
 		BinaryClassData dat=new BinaryClassData();
 		dat.code=new byte[]{
 				LDCim,2,0,0,//LDC.im 2
-				RET,0,0,0,//RET :return 2
+				RET,1,0,0,//RET :return 2
 		};
 		dat.constPool=new Object[0];
 		dat.fieldNames=new String[0];

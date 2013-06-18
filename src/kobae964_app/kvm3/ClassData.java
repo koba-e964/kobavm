@@ -127,7 +127,7 @@ public class ClassData {
 	 * @return 
 	 */
 	public boolean hasVMCode(String name){
-		return isVMClass();
+		return isVMClass()&&methodTable.containsKey(name);
 	}
 	public int getVMCodeAddress(String name){
 		return codePlace+methodTable.get(name);

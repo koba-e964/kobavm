@@ -59,7 +59,7 @@ CALL
 JMP
  JMP ar0(code=ar0<<8|0x10)
 RET
- RET (code=0x11)
+ RET (code=0x11 or 0x111) (code>>>8)!=0ならば戻り値のあるRET
 (6)比較
  CMP.lt st0 st1(code=0x12):整数st0とst1に対し、st0<st1であればtrueを積む
  CMP.eq st0 st1 (code=0x13):st0とst1が同じ種類(int,real,object,bool)の値であり、等しければtrueを積む
