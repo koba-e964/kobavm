@@ -39,7 +39,7 @@ public class ClassLoader {
 		dat.put(count,cd);
 		return count++;
 	}
-	public static int registerClassWithBinary(String name,BinaryClassData dat,Mem mem){
+	public static int registerClassWithBinary(String name,BinaryClassData dat){
 		table.put(name, count);
 		//loading
 		int codesize=dat.code.length;
@@ -99,7 +99,10 @@ public class ClassLoader {
 		return getClassData(classID).getConstant(id);
 	}
 	public static int loadCode(byte[] code){
-		//TODO
-		throw new RuntimeException();
+		int codesize=code.length;
+		mem.load(code, free);
+		int old=free;
+		free+=codesize;
+		return old;
 	}
 }

@@ -32,20 +32,27 @@ public class CPU {
 	{
 		while(decode()>=0){}
 	}
-	int decode()
-	{
+	int decode(){
 		int code=mem.getDword(pc);
 		pc+=4;
 		//TODO build machine code
+		try{
+			return decode_sub(code);
+		}catch(RuntimeException ex){
+			throw new RuntimeException(String.format("Exception at pc=0x%x, code=%08x",pc-4,code),ex);
+		}
+	}
+	int decode_sub(int code)
+	{
 		switch(code%64)
 		{
-		case 0://LDC.im
+		case LDCim://LDC.im
 		{
 			int ar0=code>>8;//signed int
 			stack.pushInt(ar0);
 			break;
 		}
-		case 1://LDC.cp st0 ar0
+		case LDCcp://LDC.cp st0 ar0
 		{
 			VarEntry st0=stack.pop();
 			String clzName=KString.getContent(st0.value);
@@ -54,7 +61,7 @@ public class CPU {
 			stack.push(result);
 			break;
 		}
-		case 2://LDC.cp.cur ar0
+		case LDCcpcur://LDC.cp.cur ar0
 		{
 			int ar0=code>>>8;//unsigned
 			VarEntry result=ClassLoader.getConstant(classID, ar0);
@@ -155,7 +162,7 @@ public class CPU {
 			pc+=ar0;
 			break;
 		}
-		case 17://ret
+		case RET://ret
 		{
 			ret();
 			break;

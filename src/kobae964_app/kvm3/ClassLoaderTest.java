@@ -13,6 +13,7 @@ public class ClassLoaderTest {
 	 */
 	@Test
 	public void testRegisterClassWithBinary0() {
+		final String name="TestClass";
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
 		BinaryClassData dat=new BinaryClassData();
@@ -27,8 +28,8 @@ public class ClassLoaderTest {
 		dat.methodNames=new String[]{"test"};
 		dat.methodOffsets=new int[]{0};
 		dat.methodSigns=new String[]{"I"};//func(int)
-		final String name="TestClass";
-		int id=ClassLoader.registerClassWithBinary(name, dat, mem);
+		ClassLoader.setMem(mem);
+		int id=ClassLoader.registerClassWithBinary(name, dat);
 		System.out.println("id("+name+")="+id);
 		byte[] code={
 			LDV,1,0,0,//var1:"test.I"
@@ -38,6 +39,7 @@ public class ClassLoaderTest {
 			-1,0,0,0,//exit
 		};
 		int mainCode=ClassLoader.loadCode(code);
+		System.out.println("mainCode was loaded at "+mainCode+"~"+(mainCode+code.length));
 		cpu.pc=mainCode;
 		cpu.run();
 		//stack:[int:2]
