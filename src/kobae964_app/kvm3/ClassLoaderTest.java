@@ -11,33 +11,32 @@ public class ClassLoaderTest {
 
 	/**
 	 * Test of {@link ClassLoader#registerClassWithBinary(String, BinaryClassData, Mem)}.
+	*/
+	@Test
+	public void testRegisterClassWithBinary0(){
+		final String name="TestClass";
+		Mem mem=new Mem(0x10000);
+		ClassLoader.setMem(mem);
+		//registers TestClass with ClassLoader
+		BinaryClassData dat=registerClassSub0(name);
+		ClassData cdat=ClassLoader.getClassData(name);
+		assertTrue(cdat.hasVMCode("test.I"));
+		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],cdat.getVMCodeAddress("test.I"));
+	}
+	/**
+	 * Test of {@link ClassLoader#registerClassWithBinary(String, BinaryClassData, Mem)}.
+	 * This code runs CPU and checks if the method returns correct value.
 	 * public int test(int val){return 2;}
 	 */
 	@Test
-	public void testRegisterClassWithBinary0() {
+	public void testRegisterClassWithBinary1() {
 		final String name="TestClass";
 		final String methodName="test.I";
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
 		ClassLoader.setMem(mem);
 		//registers TestClass with ClassLoader
-		{
-			int id;
-			BinaryClassData dat=new BinaryClassData();
-			dat.code=new byte[]{
-					LDCim,2,0,0,//LDC.im 2
-					RET,0,0,0,//RET :return 2
-			};
-			dat.constPool=new Object[0];
-			dat.fieldNames=new String[0];
-			dat.fieldOffsets=new int[0];
-			dat.fieldSigns=new String[0];
-			dat.methodNames=new String[]{"test"};
-			dat.methodOffsets=new int[]{0};
-			dat.methodSigns=new String[]{"I"};//func(int)
-			id=ClassLoader.registerClassWithBinary(name, dat);
-			System.out.println("id("+name+")="+id);
-		}
+		registerClassSub0(name);
 		byte[] code={
 			LDCim,0,0,0,//LDC.im 0
 			LDV,1,0,0,//var1:"test.I"
@@ -61,5 +60,22 @@ public class ClassLoaderTest {
 		assertEquals(1,cpu.stack.size());
 		assertEquals(2L,cpu.stack.getAt(0).value);
 	}
-
+	BinaryClassData registerClassSub0(String name){
+		int id;
+		BinaryClassData dat=new BinaryClassData();
+		dat.code=new byte[]{
+				LDCim,2,0,0,//LDC.im 2
+				RET,0,0,0,//RET :return 2
+		};
+		dat.constPool=new Object[0];
+		dat.fieldNames=new String[0];
+		dat.fieldOffsets=new int[0];
+		dat.fieldSigns=new String[0];
+		dat.methodNames=new String[]{"test"};
+		dat.methodOffsets=new int[]{0};
+		dat.methodSigns=new String[]{"I"};//func(int)
+		id=ClassLoader.registerClassWithBinary(name, dat);
+		System.out.println("id("+name+")="+id);
+		return dat;
+	}
 }

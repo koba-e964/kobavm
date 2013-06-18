@@ -165,7 +165,7 @@ public class CPU {
 			for(int i=0;i<ar0;i++){
 				args[i]=stack.pop();
 			}
-			ClassLoader.getClassData(className).call(methodName, Heap.NULL_ADDR,args);
+			ClassLoader.getClassData(className).call(Heap.NULL_ADDR, methodName,args);
 			break;
 		}
 		case 16://JMP
