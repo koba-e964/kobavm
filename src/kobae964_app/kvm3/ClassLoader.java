@@ -28,14 +28,14 @@ public class ClassLoader {
 	static public int registerClass(String name)
 	{
 		table.put(name,count);
-		ClassData cd=new ClassData(count, false,name,null);
+		ClassData cd=new ClassData(count, name,null);
 		dat.put(count,cd);
 		return count++;
 	}
 	static public int registerClass(String name,Class<? extends ClassCode> clz)
 	{
 		table.put(name,count);
-		ClassData cd=new ClassData(count, false,name,clz);
+		ClassData cd=new ClassData(count, name,clz);
 		dat.put(count,cd);
 		return count++;
 	}

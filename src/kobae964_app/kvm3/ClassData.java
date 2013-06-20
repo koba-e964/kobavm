@@ -23,11 +23,10 @@ public class ClassData {
 	/**
 	 * This constructor should be called only from ClassLoader.
 	 * @param id classID
-	 * @param isConstObj not used.
 	 * @param name the name of class.
 	 */
-	ClassData(int id,boolean isConstObj,String name,Class<? extends ClassCode> codeClz){
-		idAttr=id*4+(isConstObj?Flags.CONSTOBJ/16:Flags.VAROBJ/16);
+	ClassData(int id,String name,Class<? extends ClassCode> codeClz){
+		idAttr=id*4;
 		this.name=name;
 		this.codeClz=codeClz;
 	}
@@ -57,10 +56,6 @@ public class ClassData {
 	}
 	public int classID(){
 		return idAttr/4;
-	}
-	@Deprecated
-	public boolean isConstObj(){
-		return idAttr%4==Flags.CONSTOBJ/16;
 	}
 	public String getName(){
 		return name;
