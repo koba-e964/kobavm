@@ -49,16 +49,12 @@ public class CallStack {
 	}
 	public VarEntry pop()
 	{
-		if(data.size()==0)
-		{
+		if(data.size()==0){
 			throw new IllegalStateException("Attempted to pop empty stack (in CallStack)");
 		}
-		int type=data.get(data.size()-3);
-		long value=data.get(data.size()-2);
-		value&=0xffffffffL;
-		value|=(long)data.get(data.size()-1)<<32L;
+		VarEntry res=getAt(0);
 		data.subList(data.size()-3, data.size()).clear();
-		return new VarEntry(type, value);
+		return res;
 	}
 	public double popReal()
 	{
@@ -106,8 +102,7 @@ public class CallStack {
 		sb.append(']');
 		return sb.toString();
 	}
-	public VarEntry getAt(int index)
-	{
+	public VarEntry getAt(int index)throws IndexOutOfBoundsException{
 		checkIndex(index);
 		int size_3=data.size()-3;
 		int type=data.get(size_3-3*index);
@@ -115,26 +110,34 @@ public class CallStack {
 		value|=(long)data.get(size_3-3*index+2)<<32L;
 		return new VarEntry(type,value);
 	}
-	public void setAt(int index,VarEntry ve)
-	{
+	public void setAt(int index,VarEntry ve)throws IndexOutOfBoundsException{
 		checkIndex(index);
 		int size_3=data.size()-3;
 		data.set(size_3-3*index,ve.type);
 		data.set(size_3-3*index+1,(int)ve.value);
 		data.set(size_3-3*index+2,(int)(ve.value>>>32L));
 	}
-	private void checkIndex(int index){
+	private void checkIndex(int index)throws IndexOutOfBoundsException{
 		if(index<0||3*index>=data.size()){
-			throw new RuntimeException("Index is out of stack:"+index+" in "+"[0, "+size()+")");
+			throw new IndexOutOfBoundsException("Index is out of stack:"+index+" in "+"[0, "+size()+")");
 		}
 	}
 	public int size(){
 		return data.size()/3;
 	}
-	private void checkDataType(VarEntry val,DataType type){
+	private void checkDataType(VarEntry val,DataType type)throws DataTypeMismatchException{
 		int a=val.type;
 		if(a!=type.ordinal()){
-			throw new IllegalStateException(type+" was required, but "+DataType.values()[a]+" returned");
+			throw new DataTypeMismatchException(type,val);
+		}
+	}
+	public static class DataTypeMismatchException extends RuntimeException{
+		private static final long serialVersionUID = 8234097787124964265L;
+		public DataTypeMismatchException(String s){
+			super(s);
+		}
+		public DataTypeMismatchException(DataType expected,VarEntry actual){
+			this(expected+" was required, but "+DataType.values()[actual.type]+" returned");
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package kobae964_app.kvm3;
 
 import static org.junit.Assert.*;
+import kobae964_app.kvm3.CallStack.DataTypeMismatchException;
 
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class CallStackTest {
 		sol.pushBool(false);
 		try{
 			sol.popInt();//throws IllegalStateException
-		}catch(IllegalStateException ex){
+		}catch(DataTypeMismatchException ex){
 			System.out.println(ex.toString());
 			return;
 		}
