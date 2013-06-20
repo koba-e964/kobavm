@@ -68,14 +68,14 @@ public class CPU {
 			stack.push(result);
 			break;
 		}
-		case 3://LDV
+		case LDV://LDV(3)
 		{
 			int ar0=code>>>8;//unsigned
 			VarEntry cont=vtable.load(ar0);
 			stack.push(cont);
 			break;
 		}
-		case 4://GETFIELD
+		case GETFIELD://GETFIELD(4)
 		{
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
@@ -85,14 +85,14 @@ public class CPU {
 			stack.push(res);
 			break;
 		}
-		case 5://STV
+		case STV://STV(5)
 		{
 			VarEntry st0=stack.pop();
 			int ar0=code>>>8;//unsigned
 			vtable.store(ar0,st0);
 			break;
 		}
-		case 6://SETFIELD
+		case SETFIELD://SETFIELD(6)
 		{
 			VarEntry st0=stack.pop();//object whose member is assigned to
 			VarEntry st1=stack.pop();//name of member
@@ -103,14 +103,14 @@ public class CPU {
 			ClassLoader.setField(st0.value, name, st2);
 			break;
 		}
-		case 7://DUP
+		case DUP://DUP(7)
 		{
 			int ar0=code>>>8;
 			VarEntry ve=stack.getAt(ar0);
 			stack.push(ve.clone());
 			break;
 		}
-		case 8://SWAP
+		case SWAP://SWAP(8)
 		{
 			int ar0=(code>>>8)&0xfff;//unsigned
 			int ar1=(code>>>20)&0xfff;
@@ -120,28 +120,28 @@ public class CPU {
 			stack.setAt(ar1,ve1);
 			break;
 		}
-		case 9://ADD
+		case ADD://ADD(9)
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1+val2);
 			break;
 		}
-		case 10://SUB
+		case SUB://SUB(10)
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1-val2);
 			break;
 		}
-		case 11://MUL
+		case MUL://MUL(11)
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1*val2);
 			break;
 		}
-		case 12://DIV
+		case DIV://DIV(12)
 		{
 			long val1=stack.popInt();
 			long val2=stack.popInt();
@@ -149,14 +149,14 @@ public class CPU {
 			stack.pushInt(val1%val2);
 			break;
 		}
-		case 13://CALL ar0
+		case CALL://CALL ar0(13)
 		{
 			int ar0=code>>8;//signed
 			int dest=pc+ar0;
 			call(dest);
 			break;
 		}
-		case 14://CALL.st st0 st1
+		case CALLst://CALL.st st0 st1(14)
 		{
 			int ar0=code>>>8;//number of arguments
 			String className=stack.popString();
@@ -175,16 +175,84 @@ public class CPU {
 			}
 			break;
 		}
-		case 16://JMP
+		case JMP://JMP(16)
 		{
 			int ar0=code>>8;//signed
 			pc+=ar0;
 			break;
 		}
-		case RET://ret
+		case RET://ret(17)
 		{
 			boolean hasRetVal=(code>>>8)!=0;
 			ret(hasRetVal);
+			break;
+		}
+		case CMPlt://CMP.lt(18)
+		{
+			long st0=stack.popInt();
+			long st1=stack.popInt();
+			stack.pushBool(st0<st1);
+			break;
+		}
+		case CMPeq://CMP.eq(19)
+		{
+			VarEntry st0=stack.pop();
+			VarEntry st1=stack.pop();
+			stack.pushBool(st0.type==st1.type&&st0.value==st1.value);
+			break;
+		}
+		case ANDi://AND.i(20)
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1&val2);
+			break;
+		}
+		case ORi://OR.i(21)
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1|val2);
+			break;
+		}
+		case XORi://XOR.i(22)
+		{
+			long val1=stack.popInt();
+			long val2=stack.popInt();
+			stack.pushInt(val1^val2);
+			break;
+		}
+		case NOTi://NOT.i(23)
+		{
+			long val1=stack.popInt();
+			stack.pushInt(~val1);
+			break;
+		}
+		case ANDb://AND.b(24)
+		{
+			boolean val1=stack.popBool();
+			boolean val2=stack.popBool();
+			stack.pushBool(val1&val2);
+			break;
+		}
+		case ORb://OR.b(25)
+		{
+			boolean val1=stack.popBool();
+			boolean val2=stack.popBool();
+			stack.pushBool(val1|val2);
+			break;
+		}
+		case XORb://XOR.b(26)
+		{
+			boolean val1=stack.popBool();
+			boolean val2=stack.popBool();
+			stack.pushBool(val1^val2);
+			break;
+		}
+		case NOTb://NOT.b(27)
+		{
+			boolean val1=stack.popBool();
+			stack.pushBool(!val1);
 			break;
 		}
 		case 0x3f://EXIT
@@ -217,5 +285,28 @@ public class CPU {
 			LDCcp=1,
 			LDCcpcur=2,
 			LDV=3,
-			RET=17;
+			GETFIELD=4,
+			STV=5,
+			SETFIELD=6,
+			DUP=7,
+			SWAP=8,
+			ADD=9,
+			SUB=10,
+			MUL=11,
+			DIV=12,
+			CALL=13,
+			CALLst=14,
+			CALLin=15,
+			JMP=16,
+			RET=17,
+			CMPlt=18,
+			CMPeq=19,
+			ANDi=20,
+			ORi=21,
+			XORi=22,
+			NOTi=23,
+			ANDb=24,
+			ORb=25,
+			XORb=26,
+			NOTb=27;
 }
