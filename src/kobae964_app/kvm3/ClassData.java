@@ -26,8 +26,7 @@ public class ClassData {
 	 * @param isConstObj not used.
 	 * @param name the name of class.
 	 */
-	ClassData(int id,boolean isConstObj,String name,Class<? extends ClassCode> codeClz)
-	{
+	ClassData(int id,boolean isConstObj,String name,Class<? extends ClassCode> codeClz){
 		idAttr=id*4+(isConstObj?Flags.CONSTOBJ/16:Flags.VAROBJ/16);
 		this.name=name;
 		this.codeClz=codeClz;
@@ -56,41 +55,36 @@ public class ClassData {
 			methodTable.put(mname, bdat.methodOffsets[i]);
 		}
 	}
-	public int classID()
-	{
+	public int classID(){
 		return idAttr/4;
 	}
 	@Deprecated
-	public boolean isConstObj()
-	{
+	public boolean isConstObj(){
 		return idAttr%4==Flags.CONSTOBJ/16;
 	}
-	public String getName()
-	{
+	public String getName(){
 		return name;
 	}
-	public VarEntry getField(KVMObject obj,String name)
-	{
+	public VarEntry getField(KVMObject obj,String name){
 		ClassCode inst;
 		inst=getClassCodeInstance(obj);
 		return inst.getField(name);
 	}
 	private ClassCode getClassCodeInstance(KVMObject obj) {
-		if(codeClz==null){
-			throw new RuntimeException("No ClassCode allocated");
-		}
 		long addr=Heap.toAddress(obj);
 		return getClassCodeInstance(addr);
 	}
 	private ClassCode getClassCodeInstance(long addr) {
+		if(codeClz==null){
+			throw new RuntimeException("No ClassCode allocated");
+		}
 		try {
 			return (ClassCode) codeClz.getMethod("createInstanceFromAddress", long.class).invoke(null, addr);
 		}catch(Exception ex){
 			throw new RuntimeException(ex);
 		}
 	}
-	public void setField(KVMObject obj,String name,VarEntry v)
-	{
+	public void setField(KVMObject obj,String name,VarEntry v){
 		ClassCode inst;
 		inst=getClassCodeInstance(obj);
 		inst.setField(name,v);
@@ -132,8 +126,7 @@ public class ClassData {
 	public int getVMCodeAddress(String name){
 		return codePlace+methodTable.get(name);
 	}
-	public VarEntry getConstant(int id)
-	{
+	public VarEntry getConstant(int id){
 		VarEntry res;
 		try {
 			//TypeName.getConstant(id);
