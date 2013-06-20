@@ -37,5 +37,15 @@ public class CallStackTest {
 		assertEquals(20,result.value);
 		assertEquals(1,sol.size());
 	}
+	@Test
+	public void testPushPop0(){
+		CallStack cs=new CallStack();
+		cs.pushString("xfyxfxg");
+		cs.pushReal(3.0);
+		double r=cs.popReal();
+		assertEquals(3.0, r, 1e-9);
+		String v=cs.popString();
+		assertEquals("xfyxfxg",v);
+	}
 	
 }

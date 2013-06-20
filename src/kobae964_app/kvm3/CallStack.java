@@ -137,14 +137,4 @@ public class CallStack {
 			throw new IllegalStateException(type+" was required, but "+DataType.values()[a]+" returned");
 		}
 	}
-	public static void main(String [] args)
-	{
-		CallStack cs=new CallStack();
-		cs.pushString("xfyxfxg");
-		cs.pushReal(3.0);
-		System.out.println(cs);
-		System.out.println("real:"+cs.popReal());
-		String v=cs.popString();
-		System.out.println("string:"+v+", len="+v.length());
-	}
 }
