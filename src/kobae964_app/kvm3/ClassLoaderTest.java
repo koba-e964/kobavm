@@ -88,4 +88,30 @@ public class ClassLoaderTest {
 		System.out.println("id("+name+")="+id);
 		return dat;
 	}
+	BinaryClassData registerClassSub1(String name){
+		int id;
+		BinaryClassData dat=new BinaryClassData();
+		dat.code=new byte[]{
+				//cpTest()
+				LDCim,2,0,0,//LDC.im 2
+				RET,1,0,0,//RET nonvoid:return 2
+		};
+		dat.constPool=new Object[]{
+			1.41421356,
+			2.2360679,
+			3.141592654,
+			"sqrt2",
+			"sqrt5",
+			"pi",
+		};
+		dat.fieldNames=new String[0];
+		dat.fieldOffsets=new int[0];
+		dat.fieldSigns=new String[0];
+		dat.methodNames=new String[]{"cpTest"};
+		dat.methodOffsets=new int[]{0};
+		dat.methodSigns=new String[]{""};//cpTest()
+		id=ClassLoader.registerClassWithBinary(name, dat);
+		System.out.println("id("+name+")="+id);
+		return dat;
+	}
 }

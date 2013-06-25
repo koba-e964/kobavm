@@ -1,11 +1,13 @@
 package kobae964_app.kvm3;
 
 import java.util.HashMap;
+
 import java.util.Map;
 
 import kobae964_app.kvm3.inline.Init;
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
+import static kobae964_app.kvm3.DataType.*;
 
 public class ClassLoader {
 	static Map<String, Integer> table=new HashMap<String, Integer>();
@@ -45,10 +47,36 @@ public class ClassLoader {
 		int codesize=dat.code.length;
 		mem.load(dat.code, free);
 		//TODO:constant pool
+		VarEntry[] addrs=new VarEntry[dat.constPool.length];
+		for(int i=0,s=dat.constPool.length;i<s;i++){
+			addrs[i]=registerConstant(dat.constPool[i]);
+		}
+
 		ClassData cd=new ClassData(count,name,dat,free,-1);
 		ClassLoader.dat.put(count,cd);
 		free+=codesize;
 		return count++;
+	}
+	/**
+	 * This method is used in {@link ClassLoader#registerClassWithBinary(String, BinaryClassData)}.
+	 * @param obj an object to register with {@link Heap}
+	 * @return the address returned by {@link Heap#create(int, byte[], int)}.
+	 */
+	private static VarEntry registerConstant(Object obj){
+		if(obj instanceof String){
+			long addr=new KString((String)obj).getAddress();
+			return new VarEntry(OBJECT, addr);
+		}
+		if(obj instanceof Number){
+			Number num=(Number)obj;
+			if(num instanceof Double||num instanceof Float){//real
+				double value=num.doubleValue();
+				return new VarEntry(REAL,Double.doubleToLongBits(value));
+			}
+			//integer
+			return new VarEntry(INT,num.longValue());
+		}
+		throw new RuntimeException("Not implemented");
 	}
 	static public int getClassID(String name)
 	{
