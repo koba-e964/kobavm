@@ -125,19 +125,7 @@ public class CallStack {
 	public int size(){
 		return data.size()/3;
 	}
-	private void checkDataType(VarEntry val,DataType type)throws DataTypeMismatchException{
-		int a=val.type;
-		if(a!=type.ordinal()){
-			throw new DataTypeMismatchException(type,val);
-		}
-	}
-	public static class DataTypeMismatchException extends RuntimeException{
-		private static final long serialVersionUID = 8234097787124964265L;
-		public DataTypeMismatchException(String s){
-			super(s);
-		}
-		public DataTypeMismatchException(DataType expected,VarEntry actual){
-			this(expected+" was required, but "+DataType.values()[actual.type]+" returned");
-		}
+	private void checkDataType(VarEntry val,DataType type)throws VarEntry.DataTypeMismatchException{
+		val.checkDataType(type);
 	}
 }

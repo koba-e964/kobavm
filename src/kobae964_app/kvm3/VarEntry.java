@@ -32,9 +32,18 @@ public class VarEntry implements Cloneable{
 	 * Otherwise, this will throw an {@link RuntimeException}.
 	 * @param type Type
 	 */
-	public void checkDataType(DataType type){
+	public void checkDataType(DataType type)throws DataTypeMismatchException{
 		if((this.type&Flags.TYPE_MASK)!=type.ordinal()){
-			throw new RuntimeException(this+" is not "+type);
+			throw new DataTypeMismatchException(type,this);
+		}
+	}
+	public static class DataTypeMismatchException extends RuntimeException{
+		private static final long serialVersionUID = 3498296753589214436L;
+		public DataTypeMismatchException(String s){
+			super(s);
+		}
+		public DataTypeMismatchException(DataType expected,VarEntry actual){
+			this(expected+" was required, but "+DataType.values()[actual.type]+" returned");
 		}
 	}
 }

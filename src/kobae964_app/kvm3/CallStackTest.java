@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import kobae964_app.kvm3.CallStack.DataTypeMismatchException;
+import kobae964_app.kvm3.VarEntry.DataTypeMismatchException;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class CallStackTest {
 		sol.pushBool(false);
 		try{
 			sol.popInt();//throws IllegalStateException
-		}catch(DataTypeMismatchException ex){
+		}catch(VarEntry.DataTypeMismatchException ex){
 			System.out.println(ex.toString());
 			return;
 		}
