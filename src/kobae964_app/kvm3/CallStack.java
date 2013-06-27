@@ -106,7 +106,7 @@ public class CallStack {
 		checkIndex(index);
 		int size_3=data.size()-3;
 		int type=data.get(size_3-3*index);
-		long value=data.get(size_3-3*index+1);
+		long value=data.get(size_3-3*index+1)&((1L<<32L)-1);//unsigned
 		value|=(long)data.get(size_3-3*index+2)<<32L;
 		return new VarEntry(type,value);
 	}

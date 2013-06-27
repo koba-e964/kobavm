@@ -122,6 +122,13 @@ public class CPU {
 		}
 		case ADD://ADD(9)
 		{
+			if(code>>>8!=0){//real
+				double val1=stack.popReal();
+				double val2=stack.popReal();
+				stack.pushReal(val1+val2);
+				break;
+			}
+			//integer
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1+val2);
@@ -129,6 +136,13 @@ public class CPU {
 		}
 		case SUB://SUB(10)
 		{
+			if(code>>>8!=0){//real
+				double val1=stack.popReal();
+				double val2=stack.popReal();
+				stack.pushReal(val1-val2);
+				break;
+			}
+			//integer
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1-val2);
@@ -136,6 +150,13 @@ public class CPU {
 		}
 		case MUL://MUL(11)
 		{
+			if(code>>>8!=0){//real
+				double val1=stack.popReal();
+				double val2=stack.popReal();
+				stack.pushReal(val1*val2);
+				break;
+			}
+			//integer
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1*val2);
@@ -143,6 +164,13 @@ public class CPU {
 		}
 		case DIV://DIV(12)
 		{
+			if(code>>>8!=0){//real
+				double val1=stack.popReal();
+				double val2=stack.popReal();
+				stack.pushReal(val1/val2);//remainder is not pushed
+				break;
+			}
+			//integer
 			long val1=stack.popInt();
 			long val2=stack.popInt();
 			stack.pushInt(val1/val2);

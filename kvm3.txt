@@ -41,13 +41,14 @@ SETFIELD 指定したオブジェクトのメンバを設定
 (4)演算
 
 ADD 加算
- ADD st0 st1(code=0x9)
+ ADD st0 st1(code=0x9 or 0x109) code>>8!==0のときは整数の演算、それ以外は実数の演算
 SUB 減算
- SUB st0 st1(code=0xa)
+ SUB st0 st1(code=0xa)　code>>8!==0のときは整数の演算、それ以外は実数の演算
 MUL 乗算
- MUL st0 st1(code=0xb)
+ MUL st0 st1(code=0xb)　code>>8!==0のときは整数の演算、それ以外は実数の演算
 DIV 除算
- DIV st0 st1(code=0xc)商と余りをこの順でスタックに積む
+ DIV st0 st1(code=0xc)整数の除算、商と余りをこの順でスタックに積む
+ DIV st0 st1(code=0x10c) 実数の演算、余りなし
 
 
 (5)呼び出し

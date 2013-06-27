@@ -9,6 +9,7 @@ import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
 import org.junit.Test;
+import static kobae964_app.kvm3.CPU.*;
 
 public class CPUTest {
 
@@ -148,13 +149,13 @@ public class CPUTest {
 	}
 	/**
 	 * Test of
-	 * LDC.im.cur
+	 * LDC.cp.cur
 	 */
 	@Test
-	public void testLDCimcur(){
+	public void testLDCcpcur(){
 		Mem mem=new Mem(0x10000);
 		byte[] code={
-				2,1,0,0,//LDC.im.cur 1
+				LDCcpcur,1,0,0,//LDC.cp.cur 1
 
 				-1,0,0,0,//EXIT
 		};
@@ -167,5 +168,53 @@ public class CPUTest {
 		//stack:[(s)]
 		assertEquals(1,cpu.stack.size());
 		System.out.println(cpu.stack);
+	}
+	/**
+	 * Test of
+	 * ADD/SUB/MUL/DIV for real numbers.
+	 */
+	@Test
+	public void testRealOperations(){
+		final double r0=1.41421356;
+		final double r1=2.2360679;
+		final double r2=1.7320508;
+		Mem mem=new Mem(0x10000);
+		byte[] code={
+				LDV,0,0,0,//LDV 0(r0)
+				LDV,1,0,0,//LDV 1(r1)
+				ADD,1,0,0,//ADD st0 st1(real)
+				LDV,1,0,0,//LDV 1(r1)
+				LDV,2,0,0,//LDV 2(r2)
+				SUB,1,0,0,//SUB st0 st1(real)
+				LDV,1,0,0,//LDV 1(r1)
+				LDV,2,0,0,//LDV 2(r2)
+				MUL,1,0,0,//MUL st0 st1(real)
+				LDV,3,0,0,//LDV 3(0.0)
+				LDV,1,0,0,//LDV 1(r1)
+				DIV,1,0,0,//DIV st0 st1(real)
+
+				-1,0,0,0,//EXIT
+		};
+		mem.load(code, 0);
+		CPU cpu=new CPU(mem);
+		
+		//variables
+		cpu.vtable.store(0,toVar(r0));
+		cpu.vtable.store(1,toVar(r1));
+		cpu.vtable.store(2,toVar(r2));
+		cpu.vtable.store(3,toVar(0.0));
+	
+		//execute
+		cpu.run();
+		
+		//stack:bottom<-[r1+r0,r2-r1,r2*r1,r1/0.0]->top
+		assertEquals(4,cpu.stack.size());
+		assertEquals(Double.doubleToLongBits(r1+r0), cpu.stack.getAt(3).value);
+		assertEquals(Double.doubleToLongBits(r2-r1), cpu.stack.getAt(2).value);
+		assertEquals(Double.doubleToLongBits(r2*r1), cpu.stack.getAt(1).value);
+		assertEquals(Double.doubleToLongBits(Double.POSITIVE_INFINITY), cpu.stack.getAt(0).value);//r1/0.0=NaN
+	}
+	private static VarEntry toVar(double val){
+		return new VarEntry(REAL, Double.doubleToLongBits(val));
 	}
 }
