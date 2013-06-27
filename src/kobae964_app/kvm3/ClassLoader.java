@@ -46,13 +46,13 @@ public class ClassLoader {
 		//loading
 		int codesize=dat.code.length;
 		mem.load(dat.code, free);
-		//TODO:constant pool
+		//constant pool
 		VarEntry[] addrs=new VarEntry[dat.constPool.length];
 		for(int i=0,s=dat.constPool.length;i<s;i++){
 			addrs[i]=registerConstant(dat.constPool[i]);
 		}
 
-		ClassData cd=new ClassData(count,name,dat,free,-1);
+		ClassData cd=new ClassData(count,name,dat,free,-1, addrs);
 		ClassLoader.dat.put(count,cd);
 		free+=codesize;
 		return count++;
@@ -63,6 +63,7 @@ public class ClassLoader {
 	 * @return the address returned by {@link Heap#create(int, byte[], int)}.
 	 */
 	private static VarEntry registerConstant(Object obj){
+		System.out.println("Adding "+obj+"::"+obj.getClass());
 		if(obj instanceof String){
 			long addr=new KString((String)obj).getAddress();
 			return new VarEntry(OBJECT, addr);

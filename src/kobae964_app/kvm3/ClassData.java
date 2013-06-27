@@ -20,6 +20,7 @@ public class ClassData {
 	BinaryClassData bdat;
 	int codePlace,dataPlace;
 	Map<String, Integer> methodTable,fieldTable;
+	VarEntry[] cpool;//constants
 	/**
 	 * This constructor should be called only from ClassLoader.
 	 * @param id classID
@@ -30,7 +31,7 @@ public class ClassData {
 		this.name=name;
 		this.codeClz=codeClz;
 	}
-	ClassData(int id,String name,BinaryClassData bdat,int codePlace,int dataPlace){
+	ClassData(int id,String name,BinaryClassData bdat,int codePlace,int dataPlace, VarEntry[] cpool){
 		idAttr=id*4;
 		this.name=name;
 		this.codeClz=null;
@@ -39,6 +40,7 @@ public class ClassData {
 		this.dataPlace=dataPlace;
 		methodTable=new HashMap<String, Integer>();
 		fieldTable=new HashMap<String, Integer>();
+		this.cpool=cpool;
 		vmInit();
 	}
 	private void vmInit(){
@@ -123,6 +125,12 @@ public class ClassData {
 	}
 	public VarEntry getConstant(int id){
 		VarEntry res;
+		if(isVMClass()){
+			if(0<=id&&id<cpool.length){
+				return cpool[id];
+			}
+			throw new RuntimeException("No such constants:className="+name+", id="+id);
+		}
 		try {
 			//TypeName.getConstant(id);
 			res=(VarEntry) codeClz.getMethod("getConstant",int.class).invoke(null, id);
