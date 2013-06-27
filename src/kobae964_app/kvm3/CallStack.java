@@ -7,9 +7,11 @@ import kobae964_app.kvm3.inline.KString;
 import static kobae964_app.kvm3.DataType.*;
 
 public class CallStack {
-	public CallStack()
-	{
-		data=new ArrayList<Integer>(1000);
+	public CallStack(){
+		this(334);
+	}
+	public CallStack(int initialSize){
+		data=new ArrayList<Integer>(3*initialSize);
 	}
 	private void push(int type,long val)
 	{
@@ -23,15 +25,15 @@ public class CallStack {
 	}
 	public void pushReal(double value)
 	{
-		push(DataType.REAL.ordinal(),Double.doubleToLongBits(value));
+		push(VarEntry.valueOf(value));
 	}
 	public void pushInt(long value)
 	{
-		push(DataType.INT.ordinal(),value);
+		push(INT.ordinal(),value);
 	}
 	public void pushBool(boolean value)
 	{
-		push(DataType.BOOL.ordinal(),value?1:0);
+		push(BOOL.ordinal(),value?1:0);
 	}
 	public void pushString(String value)
 	{
@@ -41,11 +43,11 @@ public class CallStack {
 	public void pushObject(int classID,byte[] data,int flags)
 	{
 		long val=Heap.create(classID, data, flags);
-		push(DataType.OBJECT.ordinal(),val);
+		push(OBJECT.ordinal(),val);
 	}
 	public void pushObject(long addr)
 	{
-		push(DataType.OBJECT.ordinal(),addr);
+		push(OBJECT.ordinal(),addr);
 	}
 	public VarEntry pop()
 	{
@@ -59,32 +61,31 @@ public class CallStack {
 	public double popReal()
 	{
 		VarEntry result=pop();
-		checkDataType(result, REAL);
-		return Double.longBitsToDouble(result.value);
+		return result.toReal();
 	}
 	public long popInt()
 	{
 		VarEntry result=pop();
-		checkDataType(result, INT);
+		result.checkDataType(INT);
 		return result.value;
 	}
 	public boolean popBool()
 	{
 		VarEntry result=pop();
-		checkDataType(result, BOOL);
+		result.checkDataType(BOOL);
 		return result.value!=0;
 	}
 	public String popString()
 	{
 		VarEntry result=pop();
-		checkDataType(result,OBJECT);
+		result.checkDataType(OBJECT);
 		long addr=result.value;
 		return KString.getContent(addr);
 	}
 	public KVMObject popObject()
 	{
 		VarEntry result=pop();
-		checkDataType(result,OBJECT);
+		result.checkDataType(OBJECT);
 		long value=result.value;
 		KVMObject ret=Heap.retrieve(value);
 		return ret;
@@ -124,8 +125,5 @@ public class CallStack {
 	}
 	public int size(){
 		return data.size()/3;
-	}
-	private void checkDataType(VarEntry val,DataType type)throws VarEntry.DataTypeMismatchException{
-		val.checkDataType(type);
 	}
 }
