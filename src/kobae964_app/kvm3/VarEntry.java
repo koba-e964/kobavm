@@ -27,6 +27,22 @@ public class VarEntry implements Cloneable{
 		return "("+DataType.values()[type&Flags.TYPE_MASK].name()+", "+value+")";
 	}
 	/**
+	 * Utility method which takes argument(double) and returns a {@link VarEntry} that holds the argument.
+	 * @param value The content of returned {@link VarEntry}
+	 * @return a VarEntry which holds {@code value}
+	 */
+	public static VarEntry valueOf(double value){
+		return new VarEntry(DataType.REAL,Double.doubleToLongBits(value));
+	}
+	/**
+	 * Utility method which converts {@code this} to a double value.
+	 * @return converted value
+	 */
+	public double toReal()throws DataTypeMismatchException{
+		this.checkDataType(DataType.REAL);
+		return Double.longBitsToDouble(this.value);
+	}
+	/**
 	 * Checks if type of this is {@code type}.
 	 * If so, this method does nothing.
 	 * Otherwise, this will throw an {@link RuntimeException}.
