@@ -136,9 +136,9 @@ public class CPUTest {
 		CPU cpu=new CPU(mem);
 		
 		//variables
-		cpu.vtable.store(0,new VarEntry(OBJECT.ordinal(), pair));
-		cpu.vtable.store(1,new VarEntry(OBJECT.ordinal(), snd));
-		cpu.vtable.store(2,new VarEntry(INT.ordinal(), magic));
+		cpu.vtable.store(0,new VarEntry(OBJECT, pair));
+		cpu.vtable.store(1,new VarEntry(OBJECT, snd));
+		cpu.vtable.store(2,new VarEntry(INT, magic));
 		
 		//execute
 		cpu.run();
@@ -199,10 +199,10 @@ public class CPUTest {
 		CPU cpu=new CPU(mem);
 		
 		//variables
-		cpu.vtable.store(0,toVar(r0));
-		cpu.vtable.store(1,toVar(r1));
-		cpu.vtable.store(2,toVar(r2));
-		cpu.vtable.store(3,toVar(0.0));
+		cpu.vtable.store(0,VarEntry.valueOf(r0));
+		cpu.vtable.store(1,VarEntry.valueOf(r1));
+		cpu.vtable.store(2,VarEntry.valueOf(r2));
+		cpu.vtable.store(3,VarEntry.valueOf(0.0));
 	
 		//execute
 		cpu.run();
@@ -213,8 +213,5 @@ public class CPUTest {
 		assertEquals(Double.doubleToLongBits(r2-r1), cpu.stack.getAt(2).value);
 		assertEquals(Double.doubleToLongBits(r2*r1), cpu.stack.getAt(1).value);
 		assertEquals(Double.doubleToLongBits(Double.POSITIVE_INFINITY), cpu.stack.getAt(0).value);//r1/0.0=NaN
-	}
-	private static VarEntry toVar(double val){
-		return new VarEntry(REAL, Double.doubleToLongBits(val));
 	}
 }
