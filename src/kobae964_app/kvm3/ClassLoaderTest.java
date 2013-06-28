@@ -160,4 +160,18 @@ public class ClassLoaderTest {
 		System.out.println("id("+name+")="+id);
 		return dat;
 	}
+	@Test
+	public void testRegisterClassWithBinary3(){
+		BinaryClassData bcd1=registerClassSub1("ttt");
+		bcd1=bcd1.clone();
+		bcd1.constPool[0]=new int[1];//unsupported type
+		try{
+			@SuppressWarnings("unused")
+			int id=ClassLoader.registerClassWithBinary("ttt2", bcd1);
+		}catch(UnsupportedOperationException ex){
+			//ok
+			return;
+		}
+		fail(UnsupportedOperationException.class.getName()+" was not thrown.");
+	}
 }

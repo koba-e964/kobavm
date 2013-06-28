@@ -1,7 +1,11 @@
 package kobae964_app.kvm3;
 
+import static kobae964_app.kvm3.DataType.*;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import kobae964_app.kvm3.inline.KString;
 
 /**
  * ClassData
@@ -31,7 +35,7 @@ public class ClassData {
 		this.name=name;
 		this.codeClz=codeClz;
 	}
-	ClassData(int id,String name,BinaryClassData bdat,int codePlace,int dataPlace, VarEntry[] cpool){
+	ClassData(int id,String name,BinaryClassData bdat,int codePlace,int dataPlace){
 		idAttr=id*4;
 		this.name=name;
 		this.codeClz=null;
@@ -40,11 +44,15 @@ public class ClassData {
 		this.dataPlace=dataPlace;
 		methodTable=new HashMap<String, Integer>();
 		fieldTable=new HashMap<String, Integer>();
-		this.cpool=cpool;
 		vmInit();
 	}
 	private void vmInit(){
-		//TODO constant pool
+		//constant pool
+		VarEntry[] addrs=new VarEntry[bdat.constPool.length];
+		for(int i=0,s=bdat.constPool.length;i<s;i++){
+			addrs[i]=registerConstant(bdat.constPool[i]);
+		}
+		cpool=addrs;
 		//fields
 		for(int i=0;i<bdat.fieldNames.length;i++){
 			String mname=bdat.fieldNames[i]+"."+bdat.fieldSigns[i];
@@ -55,6 +63,28 @@ public class ClassData {
 			String mname=bdat.methodNames[i]+"."+bdat.methodSigns[i];
 			methodTable.put(mname, bdat.methodOffsets[i]);
 		}
+	}
+	/**
+	 * This method is used in {@link ClassLoader#registerClassWithBinary(String, BinaryClassData)}.
+	 * @param obj an object to register with {@link Heap}
+	 * @return the address returned by {@link Heap#create(int, byte[], int)}.
+	 */
+	private static VarEntry registerConstant(Object obj){
+		System.out.println("Adding "+obj+"::"+obj.getClass());
+		if(obj instanceof String){
+			long addr=new KString((String)obj).getAddress();
+			return new VarEntry(OBJECT, addr);
+		}
+		if(obj instanceof Number){
+			Number num=(Number)obj;
+			if(num instanceof Double||num instanceof Float){//real
+				double value=num.doubleValue();
+				return new VarEntry(REAL,Double.doubleToLongBits(value));
+			}
+			//integer
+			return new VarEntry(INT,num.longValue());
+		}
+		throw new UnsupportedOperationException("Unsupported Type:"+obj.getClass().getName());
 	}
 	public int classID(){
 		return idAttr/4;
