@@ -23,10 +23,10 @@ public class ClassLoaderTest {
 		BinaryClassData dat=registerClassSub0(name);
 		ClassData cdat=ClassLoader.getClassData(name);
 		assertTrue(cdat.hasVMCode("test.I"));
-		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],cdat.getVMCodeAddress("test.I"));
+		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],cdat.getVMCodeAddressSizeofVT("test.I"));
 		boolean ok=false;
 		try{
-			cdat.getVMCodeAddress("randomNameThatIsNotDefined");
+			cdat.getVMCodeAddressSizeofVT("randomNameThatIsNotDefined");
 		}catch(RuntimeException ex){
 			ok=true;//ok
 		}finally{

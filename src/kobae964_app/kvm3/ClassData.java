@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.internal.runners.MethodValidator;
+
 import kobae964_app.kvm3.inline.KString;
 
 /**
@@ -71,7 +73,6 @@ public class ClassData {
 	 * @return the address returned by {@link Heap#create(int, byte[], int)}.
 	 */
 	private static VarEntry registerConstant(Object obj){
-		System.out.println("Adding "+obj+"::"+obj.getClass());
 		if(obj instanceof String){
 			long addr=new KString((String)obj).getAddress();
 			return new VarEntry(OBJECT, addr);
@@ -196,8 +197,14 @@ public class ClassData {
 	public boolean hasVMCode(String name){
 		return isVMClass()&&methodTable.containsKey(name);
 	}
-	public int getVMCodeAddress(String name){
-		return codePlace+methodTable.get(name);
+	/**
+	 * Returns address and sizeof VariableTable to allocate.
+	 * @param name the name of method
+	 * @return new int{address,sizeofVariableTable}
+	 */
+	public int[] getVMCodeAddressSizeofVT(String name){
+		int ind=methodTable.get(name);
+		return new int[]{codePlace+bdat.methodOffsets[ind],bdat.methodNumberOfVariable[ind]};
 	}
 	public VarEntry getConstant(int id){
 		VarEntry res;

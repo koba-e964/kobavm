@@ -179,9 +179,11 @@ public class CPU {
 		}
 		case CALL://CALL ar0(13)
 		{
-			int ar0=code>>8;//signed
+			int ar0=(code>>8)&0xfff;
+			ar0|=(ar0&0x800)==0?0:~0xfff;//signed
+			int ar1=code>>>20;//size of variable table
 			int dest=pc+ar0;
-			call(dest, this.classID);//classID is not changed
+			call(dest, this.classID,ar1);//classID is not changed
 			break;
 		}
 		case CALLst://CALL.st st0 st1(14)
@@ -196,8 +198,10 @@ public class CPU {
 			ClassData dat=ClassLoader.getClassData(className);
 			if(dat.hasVMCode(methodName))
 			{
-				int addr=dat.getVMCodeAddress(methodName);
-				call(addr,ClassLoader.getClassID(className));
+				int[] tmp=dat.getVMCodeAddressSizeofVT(methodName);
+				int addr=tmp[0];
+				int vtSize=tmp[1];
+				call(addr,ClassLoader.getClassID(className),vtSize);
 			}else{
 				dat.call(Heap.NULL_ADDR, methodName,args);
 			}
@@ -290,10 +294,10 @@ public class CPU {
 		}
 		return 0;
 	}
-	public void call(int addr, int newClassID)
+	public void call(int addr, int newClassID,int vtSize)
 	{
 		stack.pushInt(pc);
-		vtable.allocate(100);//actual value should be recalled from classData
+		vtable.allocate(vtSize);
 		this.classID=newClassID;
 		pc=addr;
 	}
