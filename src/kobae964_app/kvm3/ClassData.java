@@ -24,7 +24,7 @@ public class ClassData {
 	 */
 	BinaryClassData bdat;
 	int codePlace,dataPlace;
-	Map<String, Integer> methodTable,fieldTable;
+	Map<String, Integer> methodTable,fieldTable;//name->index
 	VarEntry[] cpool;//constants
 	/**
 	 * This constructor should be called only from ClassLoader.
@@ -57,12 +57,12 @@ public class ClassData {
 		//fields
 		for(int i=0;i<bdat.fieldNames.length;i++){
 			String mname=bdat.fieldNames[i];
-			fieldTable.put(mname, bdat.fieldOffsets[i]);
+			fieldTable.put(mname, i);
 		}
 		//methods
 		for(int i=0;i<bdat.methodNames.length;i++){
 			String mname=bdat.methodNames[i]+"."+bdat.methodSigns[i];
-			methodTable.put(mname, bdat.methodOffsets[i]);
+			methodTable.put(mname, i);
 		}
 	}
 	/**
@@ -103,6 +103,12 @@ public class ClassData {
 		}
 		return v;
 	}
+	/**
+	 * Retrieves a field(member variable) from an object.
+	 * @param obj An object to get field from.
+	 * @param name The name of variable
+	 * @return a {@link VarEntry} holding the value.
+	 */
 	public VarEntry getField(KVMObject obj,String name){
 		if(codeClz==null){
 			int ind=fieldTable.get(name);
