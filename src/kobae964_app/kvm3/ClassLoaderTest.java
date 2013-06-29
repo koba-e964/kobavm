@@ -23,7 +23,9 @@ public class ClassLoaderTest {
 		BinaryClassData dat=registerClassSub0(name);
 		ClassData cdat=ClassLoader.getClassData(name);
 		assertTrue(cdat.hasVMCode("test.I"));
-		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],cdat.getVMCodeAddressSizeofVT("test.I"));
+		int res0[]=cdat.getVMCodeAddressSizeofVT("test.I");
+		assertEquals(cdat.getCodePlace()+dat.methodOffsets[0],res0[0]);
+		assertEquals(0, res0[1]);//vtSize
 		boolean ok=false;
 		try{
 			cdat.getVMCodeAddressSizeofVT("randomNameThatIsNotDefined");
@@ -86,6 +88,7 @@ public class ClassLoaderTest {
 		dat.methodNames=new String[]{"test"};
 		dat.methodOffsets=new int[]{0};
 		dat.methodSigns=new String[]{"I"};//func(int)
+		dat.methodNumberOfVariable=new int[]{0};//no variables are used
 		id=ClassLoader.registerClassWithBinary(name, dat);
 		System.out.println("id("+name+")="+id);
 		return dat;
