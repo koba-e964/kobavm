@@ -171,6 +171,32 @@ public class CPUTest {
 	}
 	/**
 	 * Test of
+	 * CALL(13) instruction
+	 * vtSize
+	 */
+	@Test
+	public void testCall(){
+		Mem mem=new Mem(0x10000);
+		CPU cpu=new CPU(mem);
+		byte[] code={
+			CALL,4,16,0,//call ar0=4, ar1(vtSize)=1
+			-1,0,0,0,
+			LDCim,114,0,0,//LDC.im 114
+			STV,1,0,0,//vtable[1]=114;//out of range
+			LDV,1,0,0,
+			RET,1,0,0,//RET void
+		};
+		mem.load(code, 0);
+		try{
+			cpu.run();
+		}catch(RuntimeException ex){
+			//ok
+			return;
+		}
+		fail();
+	}
+	/**
+	 * Test of
 	 * ADD/SUB/MUL/DIV for real numbers.
 	 */
 	@Test
