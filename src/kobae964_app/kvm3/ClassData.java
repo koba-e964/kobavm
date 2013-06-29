@@ -2,6 +2,7 @@ package kobae964_app.kvm3;
 
 import static kobae964_app.kvm3.DataType.*;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class ClassData {
 		cpool=addrs;
 		//fields
 		for(int i=0;i<bdat.fieldNames.length;i++){
-			String mname=bdat.fieldNames[i]+"."+bdat.fieldSigns[i];
+			String mname=bdat.fieldNames[i];
 			fieldTable.put(mname, bdat.fieldOffsets[i]);
 		}
 		//methods
@@ -92,7 +93,46 @@ public class ClassData {
 	public String getName(){
 		return name;
 	}
+	private long bytesToInt(byte[] array,int start,int end){
+		long v=0;
+		int c=0;
+		for(int i=start;i<end;i++){
+			byte b=array[i];
+			v|=(b&0xff)<<(8*c);
+			c++;
+		}
+		return v;
+	}
 	public VarEntry getField(KVMObject obj,String name){
+		if(codeClz==null){
+			int ind=fieldTable.get(name);
+			int offset=bdat.fieldOffsets[ind];
+			String sign=bdat.fieldSigns[ind];
+			DataType type;
+			long value;
+			if(sign.equals("I")){//integer(64-bit)
+				type=INT;
+				value=bytesToInt(obj.data, offset, offset+8);
+			}
+			else if(sign.equals("4")){//32-bit integer
+				type=INT;
+				value=bytesToInt(obj.data, offset, offset+4);
+			}
+			else if(sign.equals("B")){//bool
+				type=BOOL;
+				value=bytesToInt(obj.data, offset, offset+4);
+				value=value!=0?1:0;
+			}
+			else if(sign.equals("R")){//real
+				type=REAL;
+				value=bytesToInt(obj.data, offset, offset+8);
+			}
+			else{//object
+				type=OBJECT;
+				value=bytesToInt(obj.data, offset, offset+8);
+			}
+			return new VarEntry(type,value);
+		}
 		ClassCode inst;
 		inst=getClassCodeInstance(obj);
 		return inst.getField(name);

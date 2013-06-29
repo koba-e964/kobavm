@@ -11,6 +11,7 @@ public class BinaryClassData implements Cloneable{
 	public String[] methodNames;
 	public String[] methodSigns;
 	public int[] methodOffsets;
+	public int[] methodNumberOfVariable;//number of variables used in the method
 	public String[] fieldNames;
 	public String[] fieldSigns;
 	public int[] fieldOffsets;
@@ -22,6 +23,7 @@ public class BinaryClassData implements Cloneable{
 			inst.methodNames=methodNames.clone();
 			inst.methodSigns=methodSigns.clone();
 			inst.methodOffsets=methodOffsets.clone();
+			inst.methodNumberOfVariable=methodNumberOfVariable.clone();
 			inst.fieldNames=fieldNames.clone();
 			inst.fieldSigns=fieldSigns.clone();
 			inst.fieldOffsets=fieldOffsets.clone();

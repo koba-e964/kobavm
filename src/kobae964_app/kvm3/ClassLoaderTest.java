@@ -3,6 +3,8 @@ package kobae964_app.kvm3;
 import static org.junit.Assert.*;
 import static kobae964_app.kvm3.CPU.*;
 import static kobae964_app.kvm3.DataType.*;
+
+
 import kobae964_app.kvm3.inline.KString;
 
 import org.junit.Test;
@@ -156,6 +158,7 @@ public class ClassLoaderTest {
 		dat.methodNames=new String[]{"cpTest1","cpTest2"};
 		dat.methodOffsets=new int[]{0,16};
 		dat.methodSigns=new String[]{"",""};//cpTest1(),cpTest2()
+		dat.methodNumberOfVariable=new int[]{3,3};
 		id=ClassLoader.registerClassWithBinary(name, dat);
 		System.out.println("id("+name+")="+id);
 		return dat;
@@ -173,5 +176,99 @@ public class ClassLoaderTest {
 			return;
 		}
 		fail(UnsupportedOperationException.class.getName()+" was not thrown.");
+	}
+	BinaryClassData getEmptyBCD(){
+		BinaryClassData dat=new BinaryClassData();
+		dat.code=new byte[0];
+		dat.constPool=new Object[0];
+		dat.fieldNames=new String[0];
+		dat.fieldOffsets=new int[0];
+		dat.fieldSigns=new String[0];
+		dat.methodNames=new String[0];
+		dat.methodOffsets=new int[0];
+		dat.methodSigns=new String[0];
+		dat.methodNumberOfVariable=new int[0];
+		return dat;
+	}
+	/**
+	 * failure test
+	 */
+	@Test
+	public void testVariableTable0(){
+		BinaryClassData dat=getEmptyBCD();
+		dat.code=new byte[]{
+			LDV,4,0,0,//LDV 4
+			RET,0,0,0,//RET
+		};
+		dat.methodNames=new String[]{"t"};
+		dat.methodSigns=new String[]{""};
+		dat.methodOffsets=new int[]{0};
+		dat.methodNumberOfVariable=new int[]{3};//3
+		Mem mem=new Mem(0x10000);
+		ClassLoader.setMem(mem);
+		ClassLoader.registerClassWithBinary("TestVT", dat);
+		CPU cpu=new CPU(mem);
+		byte[] code={
+				LDV,1,0,0,//var1:
+				LDV,0,0,0,//var0:
+				CALLst,0,0,0,//CALL.st st0 st1 st2, ar0=0
+
+				-1,0,0,0,//exit
+		};
+		int mainCode=ClassLoader.loadCode(code);
+		//setting variables
+		{
+			cpu.vtable.store(0, new VarEntry(OBJECT,new KString("TestVT").getAddress()));
+			cpu.vtable.store(1, new VarEntry(OBJECT,new KString("t").getAddress()));
+		}
+		cpu.pc=mainCode;
+		try{
+			cpu.run();
+		}catch(RuntimeException ex){
+			assertEquals(RuntimeException.class,ex.getClass());
+			System.out.println(ex.getCause());
+			//ok
+			return;
+		}
+		fail(RuntimeException.class.getName()+" was not thrown.");
+	}
+	/**
+	 * success test
+	 */
+	@Test
+	public void testVariableTable1(){
+		BinaryClassData dat=getEmptyBCD();
+		dat.code=new byte[]{
+			LDCim,100,0,0,
+			STV,2,0,0,
+			LDV,2,0,0,//LDV 2
+			RET,1,0,0,//RET
+		};
+		dat.methodNames=new String[]{"t"};
+		dat.methodSigns=new String[]{""};
+		dat.methodOffsets=new int[]{0};
+		dat.methodNumberOfVariable=new int[]{3};//3
+		Mem mem=new Mem(0x10000);
+		ClassLoader.setMem(mem);
+		ClassLoader.registerClassWithBinary("TestVT", dat);
+		CPU cpu=new CPU(mem);
+		byte[] code={
+				LDV,1,0,0,//var1:
+				LDV,0,0,0,//var0:
+				CALLst,0,0,0,//CALL.st st0 st1 st2, ar0=0
+
+				-1,0,0,0,//exit
+		};
+		int mainCode=ClassLoader.loadCode(code);
+		//setting variables
+		{
+			cpu.vtable.store(0, new VarEntry(OBJECT,new KString("TestVT").getAddress()));
+			cpu.vtable.store(1, new VarEntry(OBJECT,new KString("t.").getAddress()));
+		}
+		cpu.pc=mainCode;
+		cpu.run();
+		//stack:[(INT,100)]
+		assertEquals(1,cpu.stack.size());
+		assertEquals(100,cpu.stack.getAt(0).value);
 	}
 }
