@@ -287,6 +287,15 @@ public class CPU {
 			stack.pushBool(!val1);
 			break;
 		}
+		case JC://JC(31)
+		{
+			int ar0=code>>8;
+			boolean st0=stack.popBool();
+			if(st0){
+				pc+=ar0;
+			}
+			break;
+		}
 		case 0x3f://EXIT
 			return -1;
 		default:
@@ -341,5 +350,6 @@ public class CPU {
 			ANDb=24,
 			ORb=25,
 			XORb=26,
-			NOTb=27;
+			NOTb=27,
+			JC=31;
 }

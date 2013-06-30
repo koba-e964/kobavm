@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 import static kobae964_app.kvm3.DataType.*;
 
+import java.util.Random;
+
 
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
@@ -194,6 +196,39 @@ public class CPUTest {
 			return;
 		}
 		fail();
+	}
+	/**
+	 * Test of
+	 * JC(31) instruction
+	 */
+	@Test
+	public void testJC(){
+		Random rand=new Random();
+		for(int i=0;i<10000;i++){
+			long v0=rand.nextLong();
+			long v1=rand.nextLong();
+			Mem mem=new Mem(0x10000);
+			CPU cpu=new CPU(mem);
+			byte[] code={
+				LDV,1,0,0,//LDV 1
+				LDV,0,0,0,//LDV 0
+				CMPlt,0,0,0,//CMP.lt
+				JC,9,0,0,
+				LDV,0,0,0,//LDV 0
+				-1,0,0,0,//EXIT
+				127,//padding
+				//label
+				LDV,1,0,0,//LDV 1
+				-1,0,0,0,//EXIT
+			};
+			cpu.vtable.store(0,new VarEntry(INT,v0));
+			cpu.vtable.store(1,new VarEntry(INT,v1));
+			mem.load(code,0);
+			cpu.run();
+			//stack:[max(v0,v1)]
+			assertEquals(1,cpu.stack.size());
+			assertEquals(Math.max(v0, v1),cpu.stack.getAt(0).value);
+		}
 	}
 	/**
 	 * Test of

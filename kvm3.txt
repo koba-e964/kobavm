@@ -78,5 +78,6 @@ RET
  SHR st0 st1(code=0x1d):整数st0とst1に対し、st0>>>(st1%64)を積む。(符号なし)
  SAR st0 st1(code=0x1e):整数st0とst1に対し、st0>>(st1%64)を積む。(符号付き)
 (8)分岐
+ JC ar0 st0(code=0x1f):bool値st0に対して、st0==trueであればpc+ar0にジャンプする。
 　
  //COND st0 st1 st2(code=???):st0がtrueであればst1を、falseであればst2を積む。実装するかどうかは未定。
