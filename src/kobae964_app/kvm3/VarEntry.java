@@ -62,4 +62,7 @@ public class VarEntry implements Cloneable{
 			this(expected+" was required, but "+DataType.values()[actual.type]+" returned");
 		}
 	}
+	public DataType getType(){
+		return DataType.values()[type];
+	}
 }
