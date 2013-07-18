@@ -3,10 +3,13 @@ package kobae964_app.kvm3;
 public class VarEntry implements Cloneable{
 	public int type;
 	public long value;
-	public VarEntry(int type,long value)
-	{
+	public VarEntry(int type,long value){
 		this.type=type;
 		this.value=value;
+		if(type<0 || type>=DataType.values().length){
+			//type is invalid
+			throw new IllegalArgumentException("Illegal type:"+type);
+		}
 	}
 	public VarEntry(DataType type,long value){
 		this.type=type.ordinal();
@@ -49,7 +52,7 @@ public class VarEntry implements Cloneable{
 	 * @param type Type
 	 */
 	public void checkDataType(DataType type)throws DataTypeMismatchException{
-		if((this.type&Flags.TYPE_MASK)!=type.ordinal()){
+		if(this.type!=type.ordinal()){
 			throw new DataTypeMismatchException(type,this);
 		}
 	}
