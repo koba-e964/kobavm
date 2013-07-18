@@ -1,6 +1,6 @@
 package kobae964_app.kvm3;
 
-public class VarEntry implements Cloneable{
+public final class VarEntry implements Cloneable{
 	public int type;
 	public long value;
 	public VarEntry(int type,long value){
