@@ -54,6 +54,14 @@ public class VarEntry implements Cloneable{
 			throw new DataTypeMismatchException(type,this);
 		}
 	}
+	@Override
+	public boolean equals(Object another){
+		if(!(another instanceof VarEntry))return false;
+		return equals((VarEntry)another);
+	}
+	public boolean equals(VarEntry another){
+		return type==another.type && value==another.value;
+	}
 	public static class DataTypeMismatchException extends RuntimeException{
 		private static final long serialVersionUID = 3498296753589214436L;
 		public DataTypeMismatchException(String s){
