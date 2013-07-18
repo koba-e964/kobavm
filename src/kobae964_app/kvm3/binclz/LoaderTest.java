@@ -50,9 +50,9 @@ public class LoaderTest {
 	public void testGetConstPool() {
 		byte[] source={'k','v','m',0x7f,//header
 				36,0,0,0,12,0,0,0,//code:36~(36+12)
-				48,0,0,0,48,0,0,0,//constpool:36~36
-				0,0,0,0,0,0,0,0,//method:0~0
-				0,0,0,0,0,0,0,0,//field:0~0
+				48,0,0,0,48,0,0,0,//constpool:48~(48+48)
+				96,0,0,0,0,0,0,0,//method:96~96
+				96,0,0,0,0,0,0,0,//field:96~96
 				0x03,(byte)0xd8,0x02,0x26,
 				0x32,0x5e,(byte)0x85,(byte)0xee,
 				0x32,0x5e,(byte)0x85,(byte)0xee,
