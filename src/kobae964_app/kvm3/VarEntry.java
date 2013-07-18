@@ -16,12 +16,11 @@ public class VarEntry implements Cloneable{
 		this.value=value;
 	}
 	@Override
-	public VarEntry clone()
-	{
+	public VarEntry clone(){
 		try {
 			return (VarEntry)super.clone();
 		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException(e);
+			throw new InternalError(e.toString());
 		}
 	}
 	@Override
