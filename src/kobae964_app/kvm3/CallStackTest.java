@@ -4,8 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.Random;
 
-import kobae964_app.kvm3.VarEntry.DataTypeMismatchException;
-
 import org.junit.Test;
 
 public class CallStackTest {
