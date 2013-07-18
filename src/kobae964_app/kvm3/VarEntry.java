@@ -24,7 +24,7 @@ public class VarEntry implements Cloneable{
 	@Override
 	public String toString()
 	{
-		return "("+DataType.values()[type&Flags.TYPE_MASK].name()+", "+value+")";
+		return "("+getType().toString()+", "+value+")";
 	}
 	/**
 	 * Utility method which takes argument(double) and returns a {@link VarEntry} that holds the argument.
@@ -59,7 +59,7 @@ public class VarEntry implements Cloneable{
 			super(s);
 		}
 		public DataTypeMismatchException(DataType expected,VarEntry actual){
-			this(expected+" was required, but "+DataType.values()[actual.type]+" returned");
+			this(expected+" was required, but "+actual.getType()+"was returned");
 		}
 	}
 	public DataType getType(){
