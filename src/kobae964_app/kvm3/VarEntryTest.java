@@ -43,5 +43,22 @@ public class VarEntryTest {
 			}
 		}
 	}
-
+	@Test
+	public void testConstructor0(){
+		try{
+			new VarEntry(DataType.INT.ordinal()|Flags.CONSTOBJ,10000);//this statement will throw IllegalArgumentException
+		}catch(IllegalArgumentException ex){
+			//ok
+			return;
+		}
+		fail("Error! "+IllegalArgumentException.class.getName()+" should be thrown.");
+	}
+	@Test
+	public void testEquals0(){
+		VarEntry ve0=new VarEntry(DataType.INT,3);
+		VarEntry ve1=new VarEntry(DataType.REAL,3);
+		assertFalse(ve0.equals(ve1));
+		VarEntry ve2=new VarEntry(DataType.INT,3);
+		assertTrue(ve0.equals(ve2));
+	}
 }

@@ -24,8 +24,7 @@ public class VarEntry implements Cloneable{
 		}
 	}
 	@Override
-	public String toString()
-	{
+	public String toString(){
 		return "("+getType().toString()+", "+value+")";
 	}
 	/**
