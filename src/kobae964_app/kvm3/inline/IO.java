@@ -216,6 +216,7 @@ public class IO extends ClassCode {
 		}
 		int flush(){
 			if(!write)throw new RuntimeException();
+			if(isStd)return 0;
 			try{
 				for(byte a:buf){
 					os.write(a&0xff);

@@ -34,19 +34,27 @@ public class IOTest {
 			CPU.LDV,2,0,0,
 			CPU.LDV,3,0,0,
 			CPU.CALLst,2,0,0,
-
+			CPU.STV,4,0,0,//store [4]<- fd
+			CPU.LDCim,'@',0,0,//LDC.im '@'
+			CPU.LDV,4,0,0,
+			CPU.LDV,5,0,0,
+			CPU.LDV,3,0,0,
+			CPU.CALLst,2,0,0,
 			-1,0,0,0,
 		},0);
 		long addr0=new KString("-").getAddress();
 		long met=new KString("open").getAddress();
 		long cn=new KString("IO").getAddress();
+		long pc=new KString("putchar").getAddress();
 		cpu.getVTable().store(1, new VarEntry(DataType.OBJECT,addr0));
 		cpu.getVTable().store(2, new VarEntry(DataType.OBJECT,met));
 		cpu.getVTable().store(3, new VarEntry(DataType.OBJECT,cn));
+		cpu.getVTable().store(5, new VarEntry(DataType.OBJECT,pc));
 		cpu.run();
 		CallStack st=cpu.getCallStack();
 		assertEquals(1,st.size());
 		assertEquals(DataType.INT.ordinal(),st.getAt(0).type);
+		assertEquals(0,st.getAt(0).value);
 	}
 
 }
