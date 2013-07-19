@@ -28,7 +28,7 @@ public class CPU {
 		final int N=10;
 		this.vtable.allocate(N);
 	}
-	void run()
+	public void run()
 	{
 		while(decode()>=0){}
 	}
@@ -203,7 +203,10 @@ public class CPU {
 				int vtSize=tmp[1];
 				call(addr,ClassLoader.getClassID(className),vtSize);
 			}else{
-				dat.call(Heap.NULL_ADDR, methodName,args);
+				VarEntry res=dat.call(Heap.NULL_ADDR, methodName,args);
+				if(res!=null){
+					stack.push(res);
+				}
 			}
 			break;
 		}
@@ -322,6 +325,21 @@ public class CPU {
 		}
 		vtable.deallocate();
 		pc=(int)a;
+	}
+	/**
+	 * for test only
+	 * @return
+	 */
+	@Deprecated
+	public VariableTable getVTable(){
+		return vtable;
+	}
+	/**
+	 * for test only
+	 */
+	@Deprecated
+	public CallStack getCallStack(){
+		return stack;
 	}
 	public static final int LDCim=0,
 			LDCcp=1,
