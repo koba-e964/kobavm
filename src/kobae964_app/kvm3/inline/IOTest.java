@@ -2,6 +2,7 @@ package kobae964_app.kvm3.inline;
 
 import static org.junit.Assert.*;
 import kobae964_app.kvm3.CPU;
+import kobae964_app.kvm3.CallStack;
 import kobae964_app.kvm3.DataType;
 import kobae964_app.kvm3.Mem;
 import kobae964_app.kvm3.VarEntry;
@@ -43,7 +44,9 @@ public class IOTest {
 		cpu.getVTable().store(2, new VarEntry(DataType.OBJECT,met));
 		cpu.getVTable().store(3, new VarEntry(DataType.OBJECT,cn));
 		cpu.run();
-		System.out.println(cpu.getCallStack());
+		CallStack st=cpu.getCallStack();
+		assertEquals(1,st.size());
+		assertEquals(DataType.INT.ordinal(),st.getAt(0).type);
 	}
 
 }
