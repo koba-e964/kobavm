@@ -168,6 +168,7 @@ public class ClassLoaderTest {
 	}
 	@Test
 	public void testRegisterClassWithBinary3(){
+		ClassLoader.setMem(new Mem(0x10000));
 		BinaryClassData bcd1=registerClassSub1("ttt");
 		bcd1=bcd1.clone();
 		bcd1.constPool[0]=new int[1];//unsupported type
