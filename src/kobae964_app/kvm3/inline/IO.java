@@ -32,17 +32,17 @@ public class IO extends ClassCode {
 	private IO(){}
 	@Override
 	public long getAddress() {
-		throw new RuntimeException();
+		throw new RuntimeException("IO cannot be instantiated.");
 	}
 
 	@Override
 	public VarEntry getField(String name) {
-		throw new RuntimeException();
+		throw new RuntimeException("IO has no such field:"+name);
 	}
 
 	@Override
 	public void setField(String name, VarEntry value) {
-		throw new RuntimeException();
+		throw new RuntimeException("IO has no such field:"+name);
 	}
 	/**
 	 * int open(String name);
