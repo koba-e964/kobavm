@@ -239,6 +239,10 @@ public class IO extends ClassCode {
 		 */
 		int close(){
 			checkOpen();
+			if(isStd){
+				//do nothing, return with success
+				return 0;
+			}
 			if(write)
 				flush();
 			try{
