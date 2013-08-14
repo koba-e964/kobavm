@@ -29,7 +29,7 @@ public class IO extends ClassCode {
 	/**
 	 * Default constructor. 
 	 */
-	public IO(){}
+	private IO(){}
 	@Override
 	public long getAddress() {
 		throw new RuntimeException();
@@ -121,12 +121,14 @@ public class IO extends ClassCode {
 		assert addr==Heap.NULL_ADDR;
 		return new IO();
 	}
+	public static VarEntry getConstant(int id){
+		throw new UnsupportedOperationException("IO.getConstant is not supported.");
+	}
 	/**
-	 * 
+	 * [internal method] opens a file in reading/writing mode.
 	 * @param name name
 	 * @param attr if 1, writing mode; if 0, reading mode.
-	 * @return
-	 * @throws IOException
+	 * @return file descriptor of opened file
 	 */
 	private synchronized static int open(String name,int attr){
 		if(table.containsKey(name)){
@@ -191,6 +193,7 @@ public class IO extends ClassCode {
 		}
 		List<Byte> buf=new ArrayList<Byte>();
 		int putchar(int ch){
+			checkOpen();
 			if(isStd){
 				System.out.println((char)ch);
 				return 0;
@@ -200,6 +203,7 @@ public class IO extends ClassCode {
 			return 0;
 		}
 		int getchar(){
+			checkOpen();
 			if(isStd){
 				try {
 					return new InputStreamReader(System.in).read();
@@ -215,6 +219,7 @@ public class IO extends ClassCode {
 			}
 		}
 		int flush(){
+			checkOpen();
 			if(!write)throw new RuntimeException();
 			if(isStd)return 0;
 			try{
@@ -233,6 +238,7 @@ public class IO extends ClassCode {
 		 * @return 0:success negative:failure
 		 */
 		int close(){
+			checkOpen();
 			if(write)
 				flush();
 			try{
@@ -244,6 +250,16 @@ public class IO extends ClassCode {
 			os=null;
 			is=null;
 			return 0;
+		}
+		void checkOpen()throws IllegalStateException{
+			if(isStd){
+				return;
+			}
+			if(write){
+				if(os==null)throw new IllegalStateException();
+			}else{
+				if(is==null)throw new IllegalStateException();
+			}
 		}
 	}
 }

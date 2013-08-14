@@ -30,21 +30,21 @@ public class IOTest {
 		 */
 		mem.load(new byte[]{
 			CPU.LDCim,0,0,0,
-			CPU.LDV,1,0,0,
-			CPU.LDV,2,0,0,
-			CPU.LDV,3,0,0,
+			CPU.LDV,1,0,0,//[1]:"-"
+			CPU.LDV,2,0,0,//[2]:"open"
+			CPU.LDV,3,0,0,//[3]:"IO"
 			CPU.CALLst,2,0,0,
 			CPU.STV,4,0,0,//store [4]<- fd
 			CPU.LDCim,'@',0,0,//LDC.im '@'
-			CPU.LDV,4,0,0,
-			CPU.LDV,5,0,0,
-			CPU.LDV,3,0,0,
+			CPU.LDV,4,0,0,//[4]:fd
+			CPU.LDV,5,0,0,//[5]:"putchar"
+			CPU.LDV,3,0,0,//[3]:"IO"
 			CPU.CALLst,2,0,0,
 			-1,0,0,0,
 		},0);
 		long addr0=new KString("-").getAddress();
 		long met=new KString("open").getAddress();
-		long cn=new KString("IO").getAddress();
+		long cn=new KString(IO.CLASS_NAME).getAddress();
 		long pc=new KString("putchar").getAddress();
 		cpu.getVTable().store(1, new VarEntry(DataType.OBJECT,addr0));
 		cpu.getVTable().store(2, new VarEntry(DataType.OBJECT,met));
