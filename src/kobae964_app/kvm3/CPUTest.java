@@ -204,7 +204,7 @@ public class CPUTest {
 	@Test
 	public void testJC(){
 		Random rand=new Random();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<10;i++){
 			long v0=rand.nextLong();
 			long v1=rand.nextLong();
 			Mem mem=new Mem(0x10000);

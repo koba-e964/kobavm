@@ -61,7 +61,7 @@ public class CallStackTest {
 	 */
 	@Test
 	public void testPushPop2(){
-		final int n=10000;
+		final int n=100;
 		Random rnd=new Random();
 		CallStack cs=new CallStack();
 		for(int i=0;i<n;i++){
