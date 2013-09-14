@@ -1,6 +1,10 @@
 package kobae964_app.kvm3.inline;
 
 import static org.junit.Assert.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import kobae964_app.kvm3.CPU;
 import kobae964_app.kvm3.CallStack;
 import kobae964_app.kvm3.DataType;
@@ -26,7 +30,14 @@ public class IOTest {
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
 		/*
-		 * open("-",0);
+		 * snatching stdout
+		 */
+		ByteArrayOutputStream actual=new ByteArrayOutputStream();
+		PrintStream stdout=System.out;
+		System.setOut(new PrintStream(actual));
+		/*
+		 * int fd=open("-",0);
+		 * putchar(fd,'@');
 		 */
 		mem.load(new byte[]{
 			CPU.LDCim,0,0,0,
@@ -55,6 +66,9 @@ public class IOTest {
 		assertEquals(1,st.size());
 		assertEquals(DataType.INT.ordinal(),st.getAt(0).type);
 		assertEquals(0,st.getAt(0).value);
+		assertEquals("@",actual.toString());
+
+		System.setOut(stdout);
 	}
 	/**
 	 * Attempts to close stdio, which ends to do nothing.

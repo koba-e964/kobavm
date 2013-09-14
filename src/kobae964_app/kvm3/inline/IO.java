@@ -196,7 +196,7 @@ public class IO extends ClassCode {
 		int putchar(int ch){
 			checkOpen();
 			if(isStd){
-				System.out.println((char)ch);
+				System.out.print((char)ch);
 				return 0;
 			}
 			if(!write)throw new RuntimeException();
