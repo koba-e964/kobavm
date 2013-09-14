@@ -68,7 +68,7 @@ public final class VarEntry implements Cloneable{
 			super(s);
 		}
 		public DataTypeMismatchException(DataType expected,VarEntry actual){
-			this(expected+" was required, but "+actual.getType()+"was returned");
+			this(expected+" was required, but "+actual.getType()+" was returned");
 		}
 	}
 	public DataType getType(){
