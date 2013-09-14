@@ -17,7 +17,7 @@ public class IOTest {
 	@Test
 	public void testInstantiate(){
 		try{
-			IO.createInstanceFromAddress(2);
+			IO.createInstanceFromAddress(2);//2 is not ADDR_NULL
 		}catch(IllegalArgumentException ex){
 			//ok
 			return;
@@ -64,8 +64,7 @@ public class IOTest {
 		cpu.run();
 		CallStack st=cpu.getCallStack();
 		assertEquals(1,st.size());
-		assertEquals(DataType.INT.ordinal(),st.getAt(0).type);
-		assertEquals(0,st.getAt(0).value);
+		assertEquals(new VarEntry(DataType.INT, 0),st.getAt(0));
 		assertEquals("@",actual.toString());
 
 		System.setOut(stdout);
@@ -107,8 +106,7 @@ public class IOTest {
 		cpu.run();
 		CallStack st=cpu.getCallStack();
 		assertEquals(1,st.size());
-		assertEquals(DataType.INT.ordinal(),st.getAt(0).type);
-		assertEquals(0,st.getAt(0).value);
+		assertEquals(new VarEntry(DataType.INT, 0),st.getAt(0));
 	}
 
 }
