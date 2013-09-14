@@ -74,13 +74,18 @@ public class KString extends ClassCode{
 
 	@Override
 	public VarEntry call(String name, VarEntry... args) {
-		if(args.length==0&&name.equals("length"))
-		{
-			return new VarEntry(DataType.INT.ordinal(),cont.length());
+		if(name.equals("length")){
+			if(args.length!=0){
+				throw new IllegalArgumentException(CLASS_NAME+".length() takes 0 argument"); 
+			}
+			return new VarEntry(DataType.INT,cont.length());
 		}
-		if(args.length==1&&name.equals("charAt"))
-		{
-			return new VarEntry(DataType.INT.ordinal(),cont.charAt((int)args[0].value));
+		if(name.equals("charAt")){
+			if(args.length!=1){
+				throw new IllegalArgumentException(CLASS_NAME+".charAt(int) takes 1 argument"); 
+			}
+			args[0].checkDataType(DataType.INT);
+			return new VarEntry(DataType.INT,cont.charAt((int)args[0].value));
 		}
 		throw new UnsupportedOperationException();
 	}
