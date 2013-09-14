@@ -1,0 +1,24 @@
+import String;
+import IO;
+
+public static class ConsoleIO{
+	public static void print(String s){
+		int fd=IO.open("-");//opens stdio
+		for(int i=0;i<s.length();i++){
+			char ch=s.charAt(i);
+			IO.putchar(fd,(int)ch);
+		}
+	}
+	public static String getLine(){
+		StringBuilder s=new StringBuilder();
+		int fd=IO.open("-");//opens stdio
+		while(true){
+			int ch=IO.getchar(fd);
+			if(ch=='\n'||ch=='\r'){
+				break;
+			}
+			s.append((char)ch);
+		}
+		return s.toString();
+	}
+}
