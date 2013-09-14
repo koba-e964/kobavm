@@ -13,9 +13,9 @@ public class CallStackTest {
 		CallStack sol=new CallStack();
 		sol.pushBool(false);
 		try{
-			sol.popInt();//throws IllegalStateException
+			sol.popInt();//throws VarEntry.DataTypeMismatchException
 		}catch(VarEntry.DataTypeMismatchException ex){
-			System.out.println(ex.toString());
+			assertEquals(DataType.INT+" was required, but "+DataType.BOOL+" was returned", ex.getMessage());
 			return;
 		}
 		fail("No exception was thrown.");
@@ -25,8 +25,8 @@ public class CallStackTest {
 		CallStack sol=new CallStack();
 		try{
 			sol.setAt(0,null);
-		}catch(RuntimeException ex){
-			System.out.println(ex);
+		}catch(IndexOutOfBoundsException ex){
+			assertEquals("Index is out of stack:0 in [0, 0)",ex.getMessage());
 			return;
 		}
 		fail();
