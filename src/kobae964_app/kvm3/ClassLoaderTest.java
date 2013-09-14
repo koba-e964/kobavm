@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 import static kobae964_app.kvm3.CPU.*;
 import static kobae964_app.kvm3.DataType.*;
 
+import java.util.Collections;
+
 
 import kobae964_app.kvm3.inline.KString;
 
@@ -35,7 +37,7 @@ public class ClassLoaderTest {
 			assertTrue(ok);
 		}
 		assertTrue(cdat.fieldTable.isEmpty());
-		System.out.println(cdat.methodTable);
+		assertEquals(Collections.singletonMap("test.I", 0),cdat.methodTable);
 	}
 	/**
 	 * Test of {@link ClassLoader#registerClassWithBinary(String, BinaryClassData, Mem)}.
@@ -59,8 +61,9 @@ public class ClassLoaderTest {
 
 			-1,0,0,0,//exit
 		};
-		int mainCode=ClassLoader.loadCode(code);
-		System.out.println("mainCode was loaded at "+mainCode+"~"+(mainCode+code.length));
+		@SuppressWarnings("unused")
+		int mainCode=ClassLoader.loadCode(code),
+		mainCodeEnd=mainCode+code.length;
 
 		//setting variables
 		{
@@ -75,6 +78,7 @@ public class ClassLoaderTest {
 		assertEquals(2L,cpu.stack.getAt(0).value);
 	}
 	BinaryClassData registerClassSub0(String name){
+		@SuppressWarnings("unused")
 		int id;
 		BinaryClassData dat=new BinaryClassData();
 		dat.code=new byte[]{
@@ -90,7 +94,6 @@ public class ClassLoaderTest {
 		dat.methodSigns=new String[]{"I"};//func(int)
 		dat.methodNumberOfVariable=new int[]{0};//no variables are used
 		id=ClassLoader.registerClassWithBinary(name, dat);
-		System.out.println("id("+name+")="+id);
 		return dat;
 	}
 	/**
@@ -115,7 +118,8 @@ public class ClassLoaderTest {
 			-1,0,0,0,//exit
 		};
 		int mainCode=ClassLoader.loadCode(code);
-		System.out.println("mainCode was loaded at "+mainCode+"~"+(mainCode+code.length));
+		@SuppressWarnings("unused")
+		int mainCodeEnd=mainCode+code.length;
 
 		//setting variables
 		{
@@ -133,6 +137,7 @@ public class ClassLoaderTest {
 	static final double sqrt5=2.2360679;
 	static final double pi=3.141592654;
 	BinaryClassData registerClassSub1(String name){
+		@SuppressWarnings("unused")
 		int id;
 		BinaryClassData dat=new BinaryClassData();
 		dat.code=new byte[]{
@@ -163,7 +168,6 @@ public class ClassLoaderTest {
 		dat.methodSigns=new String[]{"",""};//cpTest1(),cpTest2()
 		dat.methodNumberOfVariable=new int[]{3,3};
 		id=ClassLoader.registerClassWithBinary(name, dat);
-		System.out.println("id("+name+")="+id);
 		return dat;
 	}
 	@Test
@@ -230,7 +234,8 @@ public class ClassLoaderTest {
 			cpu.run();
 		}catch(RuntimeException ex){
 			assertEquals(RuntimeException.class,ex.getClass());
-			System.out.println(ex.getCause());
+			RuntimeException cause=(RuntimeException) ex.getCause();
+			assertEquals("No ClassCode allocated",cause.getMessage());
 			//ok
 			return;
 		}
