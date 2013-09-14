@@ -126,6 +126,7 @@ public class IO extends ClassCode {
 	}
 	/**
 	 * [internal method] opens a file in reading/writing mode.
+	 * If the specified file is already opened, this method returns the id which this method previously returned for the file.
 	 * @param name name
 	 * @param attr if 1, writing mode; if 0, reading mode.
 	 * @return file descriptor of opened file
@@ -234,7 +235,7 @@ public class IO extends ClassCode {
 			return 0;
 		}
 		/**
-		 * closed instance will never exist.
+		 * closed instance will never exist unless it is STDIO.
 		 * @return 0:success negative:failure
 		 */
 		int close(){
