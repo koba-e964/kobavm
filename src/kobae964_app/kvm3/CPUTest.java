@@ -7,6 +7,7 @@ import static kobae964_app.kvm3.DataType.*;
 import java.util.Random;
 
 
+import kobae964_app.kvm3.inline.Init;
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
@@ -152,6 +153,8 @@ public class CPUTest {
 	/**
 	 * Test of
 	 * LDC.cp.cur
+	 * Init.getConstant(int) always returns (int)12345.
+	 * @see Init
 	 */
 	@Test
 	public void testLDCcpcur(){
@@ -169,7 +172,7 @@ public class CPUTest {
 		
 		//stack:[(s)]
 		assertEquals(1,cpu.stack.size());
-		System.out.println(cpu.stack);
+		assertEquals(new VarEntry(INT, 12345),cpu.stack.getAt(0));
 	}
 	/**
 	 * Test of
