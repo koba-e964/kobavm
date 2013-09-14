@@ -5,8 +5,6 @@ import static kobae964_app.kvm3.CPU.*;
 import static kobae964_app.kvm3.DataType.*;
 
 import java.util.Collections;
-
-
 import kobae964_app.kvm3.inline.KString;
 
 import org.junit.Test;
@@ -36,7 +34,7 @@ public class ClassLoaderTest {
 		}finally{
 			assertTrue(ok);
 		}
-		assertTrue(cdat.fieldTable.isEmpty());
+		assertEquals(Collections.emptyMap(),cdat.fieldTable);
 		assertEquals(Collections.singletonMap("test.I", 0),cdat.methodTable);
 	}
 	/**
