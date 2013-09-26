@@ -7,11 +7,13 @@ import java.util.Random;
 import kobae964_app.kvm3.CPU;
 import kobae964_app.kvm3.CallStack;
 import kobae964_app.kvm3.DataType;
+import kobae964_app.kvm3.Heap;
 import kobae964_app.kvm3.Mem;
 import kobae964_app.kvm3.VarEntry;
 import kobae964_app.kvm3.VariableTable;
 import static kobae964_app.kvm3.CPU.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class KStringTest {
@@ -31,6 +33,37 @@ public class KStringTest {
 			VarEntry result=callInstance(new KString(str),"charAt",index);
 			assertEquals(new VarEntry(DataType.INT,str.charAt(index)),result);
 		}
+	}
+	@Test
+	@Ignore
+	public void testCallCreate(){
+		KString dummy=KString.createInstanceFromAddress(Heap.NULL_ADDR);//static-call
+		String str="qwertyuiop";
+		VarEntry result=callInstance(dummy,"create",str.toCharArray());
+		assertEquals(str,KString.getContent(result.value));
+	}
+	@Test
+	public void testCallSubstring() {
+		String str="Kaehler-manifold";
+		Random rand=new Random();
+		int a=rand.nextInt(str.length());
+		int b=rand.nextInt(str.length());
+		if(a>b){
+			int t=a;
+			a=b;
+			b=t;
+		}
+		VarEntry result=callInstance(new KString(str),"substring",a,b-a);
+		result.checkDataType(DataType.OBJECT);
+		assertEquals(str.substring(a, b),KString.getContent(result.value));
+	}
+	@Test
+	public void testCallConcat() {
+		String str="Kaehler-manifold";
+		String another="w15g2";
+		VarEntry result=callInstance(new KString(str),"concat",another);
+		result.checkDataType(DataType.OBJECT);
+		assertEquals(str+another,KString.getContent(result.value));
 	}
 	@SuppressWarnings("deprecation")
 	VarEntry callInstance(KString instance,String method,Object... args){
@@ -57,11 +90,12 @@ public class KStringTest {
 		byte[] code=new byte[4*args.length+preCode.length];
 		//link
 		for(int i=0,s=args.length;i<s;i++){
+			int pl=s-1-i;
 			vt.store(i+2,argV[i]);
-			code[4*i+0]=LDV;
-			code[4*i+1]=(byte)(i+2);
-			code[4*i+2]=(byte)((i+2)>>>8);
-			code[4*i+3]=0;
+			code[4*pl+0]=LDV;
+			code[4*pl+1]=(byte)(i+2);
+			code[4*pl+2]=(byte)((i+2)>>>8);
+			code[4*pl+3]=0;
 		}
 		System.arraycopy(preCode, 0, code, 4*args.length, preCode.length);
 		mem.load(code,0);

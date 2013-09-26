@@ -76,16 +76,41 @@ public class KString extends ClassCode{
 	public VarEntry call(String name, VarEntry... args) {
 		if(name.equals("length")){
 			if(args.length!=0){
-				throw new IllegalArgumentException(CLASS_NAME+".length() takes 0 argument"); 
+				throw new IllegalArgumentException(CLASS_NAME+".length() takes 0 argument");
 			}
 			return new VarEntry(DataType.INT,cont.length());
 		}
 		if(name.equals("charAt")){
 			if(args.length!=1){
-				throw new IllegalArgumentException(CLASS_NAME+".charAt(int) takes 1 argument"); 
+				throw new IllegalArgumentException(CLASS_NAME+".charAt(int) takes 1 argument");
 			}
 			args[0].checkDataType(DataType.INT);
 			return new VarEntry(DataType.INT,cont.charAt((int)args[0].value));
+		}
+		if(name.equals("create")){
+			if(args.length!=1){
+				throw new IllegalArgumentException(CLASS_NAME+".create(char[]) takes 1 argument");
+			}
+			args[0].checkDataType(DataType.OBJECT);
+			throw new UnsupportedOperationException(CLASS_NAME+".create(char[]) needs class Array, which is not provided yet.");
+		}
+		if(name.equals("substring")){
+			if(args.length!=2){
+				throw new IllegalArgumentException(CLASS_NAME+".substring(int,int) takes 2 arguments");
+			}
+			args[0].checkDataType(DataType.INT);
+			args[1].checkDataType(DataType.INT);
+			int a=(int)args[0].value;
+			int b=(int)args[1].value;
+			return VarEntry.valueOf(cont.substring(a,a+b));
+		}
+		if(name.equals("concat")){
+			if(args.length!=1){
+				throw new IllegalArgumentException(CLASS_NAME+".concat(String) takes 1 argument");
+			}
+			args[0].checkDataType(DataType.OBJECT);
+			String another=KString.getContent(args[0].value);
+			return VarEntry.valueOf(cont+another);
 		}
 		throw new UnsupportedOperationException();
 	}
