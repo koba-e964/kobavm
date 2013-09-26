@@ -55,7 +55,7 @@ DIV 除算
 CALL
  CALL ar0 ar1(code=ar0<<8|ar1<<20|0xd):この命令の終端+ar0の位置のルーチンを呼び出す。変数テーブルのサイズはar1
  CALL.st ar0 st0 st1 st2...(code=ar0<<8|0xe):st0で指定された名前のクラスに存在するst1で指定された名前の静的関数を呼び出す。引数はst2以降ar0個。
- CALL.in st0 st1(code=0xf):st0のオブジェクトのst1で指定された名前のメソッドを呼び出す
+ CALL.in ar0 st0 st1 st2...(code=0xf):st0のオブジェクトのst1で指定された名前のメソッドを呼び出す。引数はst2以降ar0個。
 
 JMP
  JMP ar0(code=ar0<<8|0x10)
