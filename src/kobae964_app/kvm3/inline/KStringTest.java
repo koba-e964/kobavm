@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import kobae964_app.kvm3.CPU;
 import kobae964_app.kvm3.CallStack;
@@ -19,13 +20,25 @@ public class KStringTest {
 
 	@Test
 	public void testCallLength() {
-		String method="length";
 		String str="Kaehler";
-		VarEntry result=callInstance(new KString(str), method);
+		VarEntry result=callInstance(new KString(str), "length");
 		assertEquals(new VarEntry(DataType.INT,str.length()),result);
+	}
+	@Test
+	public void testCallCharAt(){
+		Random rand=new Random();
+		String str="which is infinite\nwhich is yes";
+		for(int i=0;i<1000;i++){
+			int index=rand.nextInt(str.length());
+			VarEntry result=callInstance(new KString(str),"charAt",index);
+			assertEquals(new VarEntry(DataType.INT,str.charAt(index)),result);
+		}
 	}
 	@SuppressWarnings("deprecation")
 	VarEntry callInstance(KString instance,String method,Object... args){
+		if(args.length>=64){
+			throw new RuntimeException("too many arguments("+args.length+")");
+		}
 		VarEntry methodV=new VarEntry(DataType.OBJECT,new KString(method).getAddress());
 		VarEntry strV=new VarEntry(DataType.OBJECT,instance.getAddress());
 		List<VarEntry> argList=new ArrayList<VarEntry>();
@@ -50,7 +63,7 @@ public class KStringTest {
 		byte[] preCode={
 			LDV,0,0,0,//[0]="length"
 			LDV,1,0,0,//[1]="Kaehler"
-			CALLin,0,0,0,//call
+			CALLin,(byte)args.length,0,0,//call
 			-1,0,0,0,//EXIT
 		};
 		byte[] code=new byte[4*argList.size()+preCode.length];
