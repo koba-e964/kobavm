@@ -41,18 +41,7 @@ public class KStringTest {
 		VarEntry strV=new VarEntry(DataType.OBJECT,instance.getAddress());
 		VarEntry[] argV=new VarEntry[args.length];
 		for(int i=0,s=args.length;i<s;i++){
-			VarEntry ve;
-			Object a=args[i];
-			if(a instanceof Integer){
-				ve=new VarEntry(DataType.INT,(Integer)a);
-			}else if(a instanceof Boolean){
-				ve=new VarEntry(DataType.BOOL,((Boolean)a)?1:0);
-			}else if(a instanceof String){
-				ve=new VarEntry(DataType.OBJECT,new KString((String)a).getAddress());
-			}else{
-				throw new IllegalArgumentException("arg:"+a.toString());
-			}
-			argV[i]=ve;
+			argV[i]=VarEntry.valueOf(args[i]);
 		}
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
