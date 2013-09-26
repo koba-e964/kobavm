@@ -50,6 +50,11 @@ public class KString extends ClassCode{
 	{
 		KString inst=new KString();
 		inst.addr=addr;
+		if(addr==Heap.NULL_ADDR){//static call of method
+			inst.var=null;
+			inst.cont=null;
+			return inst;
+		}
 		inst.var=Heap.retrieve(addr);
 		if(inst.var.getClassID()!=ClassLoader.getClassID(CLASS_NAME))
 		{
@@ -71,7 +76,17 @@ public class KString extends ClassCode{
 	public void setField(String name, VarEntry value) {
 		throw new RuntimeException();
 	}
-
+	/**
+	 * methods:
+	 * int length();
+	 * char charAt(int);
+	 * static String create(char[]);
+	 * String substring(int,int);
+	 * String concat(String);
+	 * 
+	 * @param name method's name
+	 * @param args arguments
+	 */
 	@Override
 	public VarEntry call(String name, VarEntry... args) {
 		if(name.equals("length")){
