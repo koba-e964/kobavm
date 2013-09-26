@@ -1,0 +1,6 @@
+16:50 2013/09/26
+KVMObjectは、KVMクラスの内部でのみ使用されるべきである。
+KVMObjectとアドレスは、Heapを用いることで相互に変換可能であるが、
+KVMObjectにしか含まれていない情報(生のデータ)を使う必要があるのはKVMクラスの内部のみであるからである。
+よって"KVMObject"という語が登場するのはinline/*, ClassData#getField,setField, Heapに限られるはずである。
+(KVMクラス:KStringやIO等の組み込みのクラス(inline/*)、または外部から読み込んだクラス)

@@ -66,6 +66,16 @@ public class ClassLoader {
 		return getClassData(table.get(name));
 	}
 	/**
+	 * This method is equivalent to 
+	 * {@code Heap.retrieve(object.value).getClassID()}.
+	 * @param object an object of which to get the classID
+	 * @return
+	 */
+	static public int getClassID(VarEntry object){
+		object.checkDataType(DataType.OBJECT);
+		return Heap.retrieve(object.value).getClassID();
+	}
+	/**
 	 * 
 	 * @param addr address of object
 	 * @param name the name of field

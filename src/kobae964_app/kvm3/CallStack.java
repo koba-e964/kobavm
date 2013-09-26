@@ -40,11 +40,6 @@ public class CallStack {
 		long addr=new KString(value).getAddress();
 		pushObject(addr);
 	}
-	public void pushObject(int classID,byte[] data,int flags)
-	{
-		long val=Heap.create(classID, data, flags);
-		push(OBJECT.ordinal(),val);
-	}
 	public void pushObject(long addr)
 	{
 		push(OBJECT.ordinal(),addr);
@@ -81,14 +76,6 @@ public class CallStack {
 		result.checkDataType(OBJECT);
 		long addr=result.value;
 		return KString.getContent(addr);
-	}
-	public KVMObject popObject()
-	{
-		VarEntry result=pop();
-		result.checkDataType(OBJECT);
-		long value=result.value;
-		KVMObject ret=Heap.retrieve(value);
-		return ret;
 	}
 	private List<Integer> data;
 	@Override

@@ -213,21 +213,22 @@ public class CPU {
 		case CALLin://CALL.in ar0 st0 st1 st2 ...(15)
 		{
 			int ar0=code>>>8;//number of arguments
-			KVMObject instance=stack.popObject();//st0
+			VarEntry instance=stack.pop();//st0
 			String methodName=stack.popString();//st1
 			VarEntry[] args=new VarEntry[ar0];
 			for(int i=0;i<ar0;i++){
 				args[i]=stack.pop();
 			}
-			ClassData dat=ClassLoader.getClassData(instance.getClassID());
+			int classID=ClassLoader.getClassID(instance);
+			ClassData dat=ClassLoader.getClassData(classID);
 			if(dat.hasVMCode(methodName))
 			{
 				int[] tmp=dat.getVMCodeAddressSizeofVT(methodName);
 				int addr=tmp[0];
 				int vtSize=tmp[1];
-				call(addr,instance.getClassID(),vtSize);
+				call(addr,classID,vtSize);
 			}else{
-				VarEntry res=dat.call(Heap.toAddress(instance), methodName,args);
+				VarEntry res=dat.call(instance.value, methodName,args);
 				if(res!=null){
 					stack.push(res);
 				}
