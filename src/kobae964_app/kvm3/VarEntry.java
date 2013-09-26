@@ -1,5 +1,7 @@
 package kobae964_app.kvm3;
 
+import kobae964_app.kvm3.inline.KString;
+
 public final class VarEntry implements Cloneable{
 	public int type;
 	public long value;
@@ -34,6 +36,36 @@ public final class VarEntry implements Cloneable{
 	 */
 	public static VarEntry valueOf(double value){
 		return new VarEntry(DataType.REAL,Double.doubleToLongBits(value));
+	}
+	/**
+	 * Utility method which takes argument(Object) and returns a {@link VarEntry} that holds the argument.
+	 * {@code value} must be an instance of {@link Byte}, {@link Short}, {@link Integer}, {@link Long}, {@link Float}, {@link Double}, {@link Boolean}, {@link Character}, or {@link String}.
+	 * @param value The content of returned {@link VarEntry}
+	 * @return a VarEntry which holds {@code value}
+	 * @exception IllegalArgumentException if {@code value} is not convertible to VarEntry
+	 */
+	public static VarEntry valueOf(Object value)throws IllegalArgumentException{
+		if(value instanceof Number){
+			if(value instanceof Byte
+			|| value instanceof Short
+			|| value instanceof Integer
+			|| value instanceof Long){//a kind of integer
+				return new VarEntry(DataType.INT,((Number)value).longValue());
+			}
+			if(value instanceof Float
+			|| value instanceof Double){//a kind of real
+				return valueOf(((Number)value).doubleValue());
+			}
+			//value.getClass() is not a wrapper of primitive type
+			//throw new IllegalArgumentException(...)
+		}if(value instanceof Boolean){
+			return new VarEntry(DataType.BOOL,(Boolean)value?1:0);
+		}if(value instanceof Character){
+			return new VarEntry(DataType.INT,(Character)value);
+		}if(value instanceof String){
+			return new VarEntry(DataType.OBJECT,new KString((String)value).getAddress());
+		}
+		throw new IllegalArgumentException("not convertible to VarEntry:"+value+":"+value.getClass().getName());
 	}
 	/**
 	 * Utility method which converts {@code this} to a double value.

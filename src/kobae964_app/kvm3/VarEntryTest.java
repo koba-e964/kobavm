@@ -2,6 +2,7 @@ package kobae964_app.kvm3;
 
 import static org.junit.Assert.*;
 import kobae964_app.kvm3.VarEntry.DataTypeMismatchException;
+import kobae964_app.kvm3.inline.KString;
 
 import org.junit.Test;
 
@@ -60,5 +61,20 @@ public class VarEntryTest {
 		assertFalse(ve0.equals(ve1));
 		VarEntry ve2=new VarEntry(DataType.INT,3);
 		assertTrue(ve0.equals(ve2));
+	}
+	@Test
+	public void testValueOf(){
+		VarEntry v0=VarEntry.valueOf((Integer)15);
+		assertEquals(new VarEntry(DataType.INT,15),v0);
+		VarEntry v1=VarEntry.valueOf((Float)13.0f);
+		assertEquals(VarEntry.valueOf(13.0),v1);
+		VarEntry v2=VarEntry.valueOf("StringTest");
+		assertEquals("StringTest",KString.getContent(v2.value));
+		VarEntry v3=VarEntry.valueOf(true);
+		assertEquals(new VarEntry(DataType.BOOL,1),v3);
+		VarEntry v4=VarEntry.valueOf((Character)'2');
+		assertEquals(new VarEntry(DataType.INT,0x32),v4);
+		VarEntry v5=VarEntry.valueOf(Byte.valueOf((byte) -19));
+		assertEquals(new VarEntry(DataType.INT,-19L),v5);
 	}
 }
