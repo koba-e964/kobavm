@@ -2,8 +2,6 @@ package kobae964_app.kvm3.inline;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import kobae964_app.kvm3.CPU;
@@ -28,7 +26,7 @@ public class KStringTest {
 	public void testCallCharAt(){
 		Random rand=new Random();
 		String str="which is infinite\nwhich is yes";
-		for(int i=0;i<1000;i++){
+		for(int i=0;i<50;i++){
 			int index=rand.nextInt(str.length());
 			VarEntry result=callInstance(new KString(str),"charAt",index);
 			assertEquals(new VarEntry(DataType.INT,str.charAt(index)),result);
@@ -41,9 +39,10 @@ public class KStringTest {
 		}
 		VarEntry methodV=new VarEntry(DataType.OBJECT,new KString(method).getAddress());
 		VarEntry strV=new VarEntry(DataType.OBJECT,instance.getAddress());
-		List<VarEntry> argList=new ArrayList<VarEntry>();
-		for(Object a:args){
+		VarEntry[] argV=new VarEntry[args.length];
+		for(int i=0,s=args.length;i<s;i++){
 			VarEntry ve;
+			Object a=args[i];
 			if(a instanceof Integer){
 				ve=new VarEntry(DataType.INT,(Integer)a);
 			}else if(a instanceof Boolean){
@@ -53,7 +52,7 @@ public class KStringTest {
 			}else{
 				throw new IllegalArgumentException("arg:"+a.toString());
 			}
-			argList.add(ve);
+			argV[i]=ve;
 		}
 		Mem mem=new Mem(0x10000);
 		CPU cpu=new CPU(mem);
@@ -66,14 +65,16 @@ public class KStringTest {
 			CALLin,(byte)args.length,0,0,//call
 			-1,0,0,0,//EXIT
 		};
-		byte[] code=new byte[4*argList.size()+preCode.length];
+		byte[] code=new byte[4*args.length+preCode.length];
 		//link
-		for(int i=0,s=argList.size();i<s;i++){
-			vt.store(i+2,argList.get(i));
-			byte[] snip=new byte[]{LDV,(byte)(i+2),(byte)((i+2)>>>8),0};//[i+2]
-			System.arraycopy(snip, 0, code, 4*i, 4);
+		for(int i=0,s=args.length;i<s;i++){
+			vt.store(i+2,argV[i]);
+			code[4*i+0]=LDV;
+			code[4*i+1]=(byte)(i+2);
+			code[4*i+2]=(byte)((i+2)>>>8);
+			code[4*i+3]=0;
 		}
-		System.arraycopy(preCode, 0, code, 4*argList.size(), preCode.length);
+		System.arraycopy(preCode, 0, code, 4*args.length, preCode.length);
 		mem.load(code,0);
 		cpu.run();
 		CallStack cs=cpu.getCallStack();
