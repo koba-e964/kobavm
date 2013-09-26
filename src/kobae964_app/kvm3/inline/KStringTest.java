@@ -13,6 +13,7 @@ import org.junit.Test;
 
 public class KStringTest {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testCallLength() {
 		String method="length";
@@ -25,12 +26,14 @@ public class KStringTest {
 			LDV,0,0,0,//[0]="length"
 			LDV,1,0,0,//[1]="Kaehler"
 			CALLin,0,0,0,//call
+			-1,0,0,0,//EXIT
 		};
 		mem.load(code,0);
 		VariableTable vt=cpu.getVTable();
 		vt.store(0, methodV);
 		vt.store(1, strV);
 		cpu.run();
+		assertEquals(1,cpu.getCallStack().size());
 		assertEquals(new VarEntry(DataType.INT,str.length()),cpu.getCallStack().getAt(0));
 	}
 
