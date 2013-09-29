@@ -6,6 +6,7 @@ import java.util.Map;
 
 import kobae964_app.kvm3.inline.IO;
 import kobae964_app.kvm3.inline.Init;
+import kobae964_app.kvm3.inline.KArray;
 import kobae964_app.kvm3.inline.KString;
 import kobae964_app.kvm3.inline.Pair;
 
@@ -24,6 +25,7 @@ public class ClassLoader {
 		registerClass(Pair.CLASS_NAME,Pair.class);
 		registerClass(Init.CLASS_NAME,Init.class);
 		registerClass(IO.CLASS_NAME,IO.class);
+		registerClass(KArray.CLASS_NAME,KArray.class);
 	}
 	public static void setMem(Mem mem){
 		ClassLoader.mem=mem;

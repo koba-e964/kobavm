@@ -38,6 +38,14 @@ public final class VarEntry implements Cloneable{
 		return new VarEntry(DataType.REAL,Double.doubleToLongBits(value));
 	}
 	/**
+	 * Utility method which takes argument(long) and returns a {@link VarEntry} that holds the argument.
+	 * @param value The content of returned {@link VarEntry}
+	 * @return a VarEntry which holds {@code value}
+	 */
+	public static VarEntry valueOf(long value){
+		return new VarEntry(DataType.INT,value);
+	}
+	/**
 	 * Utility method which takes argument(Object) and returns a {@link VarEntry} that holds the argument.
 	 * {@code value} must be an instance of {@link Byte}, {@link Short}, {@link Integer}, {@link Long}, {@link Float}, {@link Double}, {@link Boolean}, {@link Character}, or {@link String}.
 	 * @param value The content of returned {@link VarEntry}
