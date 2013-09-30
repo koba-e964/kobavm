@@ -49,8 +49,8 @@ public class KArrayTest {
 		VarEntry ret = inst.call("get", VarEntry.valueOf(0));
 		ret.checkDataType(DataType.OBJECT);
 		assertEquals("test0",KString.getContent(ret.value));
-		assertNull(inst.call("set", VarEntry.valueOf(2),VarEntry.valueOf(29)));
-		assertEquals(VarEntry.valueOf(29),inst.call("get", VarEntry.valueOf(2)));
+		assertNull(inst.call("set", VarEntry.valueOf(2),VarEntry.valueOf(0x81925050af342516L)));
+		assertEquals(VarEntry.valueOf(0x81925050af342516L),inst.call("get", VarEntry.valueOf(2)));
 	}
 	private static long toInt(byte[] array,int start,int len){
 		long v=0;
@@ -77,13 +77,6 @@ public class KArrayTest {
 		correct[39]=64;
 		correct[40]=(byte)DataType.BOOL.ordinal();
 		correct[44]=1;
-		for(int i=0;i<obj.data.length/4;i++){
-			int v=0;
-			for(int j=0;j<4;j++){
-				v|=(obj.data[4*i+j]&0xff)<<(8*j);
-			}
-			System.out.printf("%08x ",v);
-		}
 		assertArrayEquals(correct,obj.data);
 		long addr=toInt(obj.data,8,8);
 		String cont=KString.getContent(addr);
