@@ -83,6 +83,15 @@ public class KArrayTest {
 		assertEquals("test0",cont);
 	}
 	@Test
+	public void testKArrayCtor2(){
+		int len=10;
+		KArray inst=new KArray(len);
+		for(int i=0;i<len;i++){
+			VarEntry ve=inst.call("get", VarEntry.valueOf(i));
+			assertEquals(VarEntry.valueOf(null),ve);
+		}
+	}
+	@Test
 	public void testCreateInstanceFromAddress() {
 		Object[] array=new Object[]{"test0",145,22.0,true};
 		KArray inst=new KArray(array);
