@@ -1,5 +1,8 @@
 package kobae964_app.kvm3;
 
+import java.lang.reflect.Array;
+
+import kobae964_app.kvm3.inline.KArray;
 import kobae964_app.kvm3.inline.KString;
 
 public final class VarEntry implements Cloneable{
@@ -75,6 +78,15 @@ public final class VarEntry implements Cloneable{
 			return new VarEntry(DataType.INT,(Character)value);
 		}if(value instanceof String){
 			return new VarEntry(DataType.OBJECT,new KString((String)value).getAddress());
+		}if(value.getClass().isArray()){
+			int length=Array.getLength(value);
+			Object[] array=new Object[length];
+			for(int i=0;i<length;i++){
+				Object sub=Array.get(value, i);
+				array[i]=sub;
+			}
+			KArray inst=new KArray(array);
+			return new VarEntry(DataType.OBJECT,inst.getAddress());
 		}
 		throw new IllegalArgumentException("not convertible to VarEntry:"+value+":"+value.getClass().getName());
 	}

@@ -107,7 +107,16 @@ public class KString extends ClassCode{
 				throw new IllegalArgumentException(CLASS_NAME+".create(char[]) takes 1 argument");
 			}
 			args[0].checkDataType(DataType.OBJECT);
-			throw new UnsupportedOperationException(CLASS_NAME+".create(char[]) needs class Array, which is not provided yet.");
+			KArray inst=KArray.createInstanceFromAddress(args[0].value);
+			int length=(int)inst.getField("length").value;
+			char[] back=new char[length];
+			for(int i=0;i<length;i++){
+				VarEntry ve=inst.call("get", VarEntry.valueOf(i));
+				ve.checkDataType(DataType.INT);
+				back[i]=(char)ve.value;
+			}
+			String out=new String(back);
+			return VarEntry.valueOf(out);
 		}
 		if(name.equals("substring")){
 			if(args.length!=2){
