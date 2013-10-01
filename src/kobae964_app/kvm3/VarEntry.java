@@ -53,6 +53,9 @@ public final class VarEntry implements Cloneable{
 	 * @exception IllegalArgumentException if {@code value} is not convertible to VarEntry
 	 */
 	public static VarEntry valueOf(Object value)throws IllegalArgumentException{
+		if(value==null){
+			return new VarEntry(DataType.OBJECT, Heap.NULL_ADDR);
+		}
 		if(value instanceof Number){
 			if(value instanceof Byte
 			|| value instanceof Short
