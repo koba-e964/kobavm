@@ -21,7 +21,7 @@ public class KString extends ClassCode{
 	public KString(KVMObject obj)
 	{
 		var=obj;
-		cont=new String(obj.data);
+		cont=new String(obj.getContent());
 	}
 	public KString(String str)
 	{
@@ -39,7 +39,7 @@ public class KString extends ClassCode{
 	{
 		this.addr=addr;
 		var=Heap.retrieve(addr);
-		cont=new String(var.data);
+		cont=new String(var.getContent());
 	}
 	/**
 	 * called by {@link ClassData#getField(KVMObject, String)}.
@@ -60,7 +60,7 @@ public class KString extends ClassCode{
 		{
 			throw new IllegalArgumentException("Invalid type (addr="+addr+")");
 		}
-		inst.cont=new String(inst.var.data);
+		inst.cont=new String(inst.var.getContent());
 		return inst;
 	}
 	public long getAddress()

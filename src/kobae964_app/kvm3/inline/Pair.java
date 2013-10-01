@@ -70,9 +70,8 @@ public class Pair extends ClassCode{
 		if(offsets.containsKey(name))
 		{
 			int offset=offsets.get(name);
-			byte[] buf=new byte[INT_SIZE];
-			System.arraycopy(obj.data,offset,buf,0,INT_SIZE);
-			return new VarEntry(DataType.INT.ordinal(),toInt(buf));
+			int value=(int)obj.getInt(offset, 4);
+			return new VarEntry(DataType.INT,value);
 		}
 		return null;
 	}
@@ -83,12 +82,8 @@ public class Pair extends ClassCode{
 		if(offsets.containsKey(name))
 		{
 			int offset=offsets.get(name);
-			if(value.type!=DataType.INT.ordinal())
-			{
-				throw new ClassCastException();
-			}
-			byte[] buf=toBytes((int)value.value);
-			System.arraycopy(buf,0,obj.data,offset,INT_SIZE);
+			value.checkDataType(DataType.INT);
+			obj.setInt(offset, 4, (int)value.value);
 			return;
 		}
 		throw new RuntimeException("Illegal member Pair."+name);

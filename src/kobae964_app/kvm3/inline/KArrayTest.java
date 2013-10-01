@@ -2,8 +2,6 @@ package kobae964_app.kvm3.inline;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
-
 import kobae964_app.kvm3.ClassLoader;
 import kobae964_app.kvm3.DataType;
 import kobae964_app.kvm3.Heap;
@@ -52,14 +50,6 @@ public class KArrayTest {
 		assertNull(inst.call("set", VarEntry.valueOf(2),VarEntry.valueOf(0x81925050af342516L)));
 		assertEquals(VarEntry.valueOf(0x81925050af342516L),inst.call("get", VarEntry.valueOf(2)));
 	}
-	private static long toInt(byte[] array,int start,int len){
-		long v=0;
-		for(int i=0;i<len&&i<8;i++){
-			v|=(array[start+i]&0xffL)<<(8*i);
-		}
-		return v;
-	}
-
 	@Test
 	public void testKArrayCtor(){
 		Object[] array=new Object[]{"test0",145,22.0,true};
@@ -68,8 +58,7 @@ public class KArrayTest {
 		byte[] correct=new byte[4+4*12];
 		correct[0]=4;//length=4;
 		correct[4]=(byte) DataType.OBJECT.ordinal();
-		correct[8]=obj.data[8];//not checked
-		System.arraycopy(obj.data, 8, correct, 8, 8);//copies the address of "test0"
+		System.arraycopy(obj.getContent(), 8, correct, 8, 8);//copies the address of "test0"
 		correct[16]=(byte) DataType.INT.ordinal();
 		correct[20]=(byte) 145;
 		correct[28]=(byte)DataType.REAL.ordinal();
@@ -77,8 +66,8 @@ public class KArrayTest {
 		correct[39]=64;
 		correct[40]=(byte)DataType.BOOL.ordinal();
 		correct[44]=1;
-		assertArrayEquals(correct,obj.data);
-		long addr=toInt(obj.data,8,8);
+		assertArrayEquals(correct,obj.getContent());
+		long addr=obj.getInt(8,8);
 		String cont=KString.getContent(addr);
 		assertEquals("test0",cont);
 	}

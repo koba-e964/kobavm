@@ -91,16 +91,6 @@ public class ClassData {
 	public String getName(){
 		return name;
 	}
-	private long bytesToInt(byte[] array,int start,int end){
-		long v=0;
-		int c=0;
-		for(int i=start;i<end;i++){
-			byte b=array[i];
-			v|=(b&0xff)<<(8*c);
-			c++;
-		}
-		return v;
-	}
 	/**
 	 * Retrieves a field(member variable) from an object.
 	 * @param obj An object to get field from.
@@ -116,24 +106,24 @@ public class ClassData {
 			long value;
 			if(sign.equals("I")){//integer(64-bit)
 				type=INT;
-				value=bytesToInt(obj.data, offset, offset+8);
+				value=obj.getInt(offset,8);
 			}
 			else if(sign.equals("4")){//32-bit integer
 				type=INT;
-				value=bytesToInt(obj.data, offset, offset+4);
+				value=obj.getInt(offset,4);
 			}
 			else if(sign.equals("B")){//bool
 				type=BOOL;
-				value=bytesToInt(obj.data, offset, offset+4);
+				value=obj.getInt(offset,4);
 				value=value!=0?1:0;
 			}
 			else if(sign.equals("R")){//real
 				type=REAL;
-				value=bytesToInt(obj.data, offset, offset+8);
+				value=obj.getInt(offset,8);
 			}
 			else{//object
 				type=OBJECT;
-				value=bytesToInt(obj.data, offset, offset+8);
+				value=obj.getInt(offset,8);
 			}
 			return new VarEntry(type,value);
 		}

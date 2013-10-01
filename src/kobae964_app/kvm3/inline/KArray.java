@@ -13,27 +13,10 @@ import kobae964_app.kvm3.VarEntry;
  */
 public class KArray extends ClassCode {
 	long addr;
-	private static long toInt(byte[] array,int start,int len){
-		long v=0;
-		for(int i=0;i<len&&i<8;i++){
-			v|=(array[start+i]&0xffL)<<(8*i);
-		}
-		return v;
-	}
-	private static VarEntry getVarEntry(byte[] array,int start){
-		int type=(int)toInt(array, start, 4);
-		long value=toInt(array, start+4, 8);
-		return new VarEntry(type, value);
-	}
 	private static void setInt(byte[] array,int start,int len,int value){
 		for(int i=0;i<len&&i<8;i++){
 			array[start+i]=(byte)(value>>>(8*i));
 		}
-	}
-	private static void setVarEntry(byte[] array,int start,VarEntry ve){
-		setInt(array,start,4,ve.type);
-		setInt(array,start+4,4,(int)ve.value);
-		setInt(array,start+8,4,(int)(ve.value>>>32));
 	}
 	private KArray(){
 		//do nothing
@@ -42,14 +25,14 @@ public class KArray extends ClassCode {
 		commonInit(array.length);
 		KVMObject obj=Heap.retrieve(addr);
 		for(int i=0;i<array.length;i++){
-			setVarEntry(obj.data,4+12*i,VarEntry.valueOf(array[i]));
+			obj.setVarEntry(4+12*i,VarEntry.valueOf(array[i]));
 		}
 	}
 	public KArray(int length){
 		commonInit(length);
 		KVMObject obj=Heap.retrieve(addr);
 		for(int i=0;i<length;i++){
-			setVarEntry(obj.data,4+12*i,new VarEntry(DataType.OBJECT,Heap.NULL_ADDR));//null
+			obj.setVarEntry(4+12*i,new VarEntry(DataType.OBJECT,Heap.NULL_ADDR));//null
 		}
 	}
 	void commonInit(int length){
@@ -83,7 +66,7 @@ public class KArray extends ClassCode {
 	public VarEntry getField(String name) {
 		if(name.equals("length")){
 			KVMObject obj=Heap.retrieve(addr);
-			return VarEntry.valueOf(toInt(obj.data,0,4));
+			return VarEntry.valueOf(obj.getInt(0, 4));
 		}
 		throw new UnsupportedOperationException("attempted to getField name="+name+", addr="+addr);
 	}
@@ -106,11 +89,11 @@ public class KArray extends ClassCode {
 			args[0].checkDataType(DataType.INT);
 			int idx=(int)args[0].value;
 			KVMObject obj=Heap.retrieve(addr);
-			int len=(int)toInt(obj.data,0,4);
+			int len=(int)obj.getInt(0,4);
 			if(idx<0 || idx>=len){
 				throw new ArrayIndexOutOfBoundsException(idx);
 			}
-			return getVarEntry(obj.data,4+12*idx);
+			return obj.getVarEntry(4+12*idx);
 		}
 		if(name.equals("set")){
 			if(args.length!=2){
@@ -119,11 +102,11 @@ public class KArray extends ClassCode {
 			args[0].checkDataType(DataType.INT);
 			int idx=(int)args[0].value;
 			KVMObject obj=Heap.retrieve(addr);
-			int len=(int)toInt(obj.data,0,4);
+			int len=(int)obj.getInt(0,4);
 			if(idx<0 || idx>=len){
 				throw new ArrayIndexOutOfBoundsException(idx);
 			}
-			setVarEntry(obj.data, 4+12*idx, args[1]);
+			obj.setVarEntry(4+12*idx, args[1]);
 			return null;//void
 		}
 		StringBuilder sb=new StringBuilder("undefined method name="+name+", args=[");
