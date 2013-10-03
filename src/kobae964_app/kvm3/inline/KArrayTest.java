@@ -82,7 +82,7 @@ public class KArrayTest {
 	}
 	@Test
 	public void testCreateInstanceFromAddress() {
-		Object[] array=new Object[]{"test0",145,22.0,true};
+		Object[] array=new Object[]{"test0",145,22.0,true,0x8012345678abcdeL};
 		KArray inst=new KArray(array);
 		long addr=inst.getAddress();
 		KArray inst2=KArray.createInstanceFromAddress(addr);

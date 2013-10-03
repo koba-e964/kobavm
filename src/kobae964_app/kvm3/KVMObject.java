@@ -51,7 +51,7 @@ public class KVMObject {
 		long value=getInt(start+4, 8);
 		return new VarEntry(type, value);
 	}
-	public void setInt(int start,int len,int value){
+	public void setInt(int start,int len,long value){
 		for(int i=0;i<len&&i<8;i++){
 			data[start+i]=(byte)(value>>>(8*i));
 		}
@@ -63,8 +63,7 @@ public class KVMObject {
 	 */
 	public void setVarEntry(int start,VarEntry ve){
 		setInt(start,4,ve.type);
-		setInt(start+4,4,(int)ve.value);
-		setInt(start+8,4,(int)(ve.value>>>32));
+		setInt(start+4,8,ve.value);
 	}
 	public int length(){
 		return data.length;
