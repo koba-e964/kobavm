@@ -77,30 +77,36 @@ public class CPU {
 		}
 		case GETFIELD://GETFIELD(4)
 		{
-			VarEntry st0=stack.pop();
-			VarEntry st1=stack.pop();
+			VarEntry st0=stack.referPop();
+			VarEntry st1=stack.referPop();
 			String name=KString.getContent(st1.value);
 			st0.checkDataType(OBJECT);
 			VarEntry res=ClassLoader.getField(st0.value,name);
 			stack.push(res);
+			st0.unrefer();
+			st1.unrefer();
 			break;
 		}
 		case STV://STV(5)
 		{
-			VarEntry st0=stack.pop();
+			VarEntry st0=stack.referPop();
 			int ar0=code>>>8;//unsigned
 			vtable.store(ar0,st0);
+			st0.unrefer();
 			break;
 		}
 		case SETFIELD://SETFIELD(6)
 		{
-			VarEntry st0=stack.pop();//object whose member is assigned to
-			VarEntry st1=stack.pop();//name of member
-			VarEntry st2=stack.pop();//value that is assigned to member
+			VarEntry st0=stack.referPop();//object whose member is assigned to
+			VarEntry st1=stack.referPop();//name of member
+			VarEntry st2=stack.referPop();//value that is assigned to member
 			st1.checkDataType(OBJECT);
 			String name=KString.getContent(st1.value);
 			st0.checkDataType(OBJECT);
 			ClassLoader.setField(st0.value, name, st2);
+			st0.unrefer();
+			st1.unrefer();
+			st2.unrefer();
 			break;
 		}
 		case DUP://DUP(7)
@@ -116,8 +122,12 @@ public class CPU {
 			int ar1=(code>>>20)&0xfff;
 			VarEntry ve1=stack.getAt(ar0);
 			VarEntry ve2=stack.getAt(ar1);
+			ve1.refer();
+			ve2.refer();
 			stack.setAt(ar0,ve2);
 			stack.setAt(ar1,ve1);
+			ve1.unrefer();
+			ve2.unrefer();
 			break;
 		}
 		case ADD://ADD(9)
@@ -329,6 +339,10 @@ public class CPU {
 		default:
 			throw new RuntimeException("Invalid Code");
 		}
+		if(DEBUG){
+			System.out.printf("code=%x\n",code);
+			ObjManager.dumpAll();
+		}
 		return 0;
 	}
 	public void call(int addr, int newClassID,int vtSize)
@@ -395,4 +409,5 @@ public class CPU {
 			XORb=26,
 			NOTb=27,
 			JC=31;
+	public static final boolean DEBUG=false;
 }

@@ -53,6 +53,19 @@ public class CallStack {
 		data.set(size_3-3*ind+1,-1);
 		data.set(size_3-3*ind+2,-1);
 	}
+	/*pop that doesn't decrement refcount
+	 * 
+	 */
+	public VarEntry referPop(){
+		if(data.size()==0){
+			throw new IllegalStateException("Attempted to pop empty stack (in CallStack)");
+		}
+		VarEntry res=getAt(0);
+		ObjManager.refer(res);
+		nullifyAt(0);
+		data.subList(data.size()-3, data.size()).clear();
+		return res;
+	}
 	public VarEntry pop()
 	{
 		if(data.size()==0){

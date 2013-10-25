@@ -133,4 +133,14 @@ public final class VarEntry implements Cloneable{
 	public DataType getType(){
 		return DataType.values()[type];
 	}
+	public void refer(){
+		if(type==DataType.OBJECT.ordinal() && value!=ObjManager.NULL_ADDR){
+			ObjManager.refer(this);
+		}
+	}
+	public void unrefer(){
+		if(type==DataType.OBJECT.ordinal() && value!=ObjManager.NULL_ADDR){
+			ObjManager.unrefer(this);
+		}
+	}
 }

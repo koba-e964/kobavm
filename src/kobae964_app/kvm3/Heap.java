@@ -70,7 +70,8 @@ public class Heap {
 		refc.put(addr, refc.get(addr)-1);
 		if(refc.get(addr)<=0){
 			//gc
-			System.out.println("object (addr="+addr+") became alone. gc...");
+			if(DEBUG)
+				System.out.println("object (addr="+addr+") became alone. gc...");
 			//TODO garbage collection
 			KVMObject obj=inv.get(addr);
 			inv.remove(addr);
@@ -91,4 +92,5 @@ public class Heap {
 	public static boolean isNull(long addr){
 		return addr==NULL_ADDR;
 	}
+	public static final boolean DEBUG=false;
 }

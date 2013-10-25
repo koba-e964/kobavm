@@ -9,7 +9,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ CallStackTest.class, ClassLoaderTest.class, CPUTest.class,
+@SuiteClasses({ CallStackTest.class, ClassLoaderTest.class, CPUTest.class,ObjManagerTest.class,
 		VarEntryTest.class,KArrayTest.class, KStringTest.class ,IOTest.class})
 public class AllTests {
 

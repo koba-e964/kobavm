@@ -27,7 +27,7 @@ public class ObjManagerTest {
 		CPU cpu=new CPU(mem);
 		KString obj1=new KString("eliminated");
 		KString obj2=new KString("overwritten");
-		VariableTable vt=new VariableTable();
+		VariableTable vt=cpu.getVTable();
 		vt.store(0, VarEntry.valueOf(obj1));
 		vt.store(1, VarEntry.valueOf(obj2));
 		byte[] code={
@@ -35,7 +35,7 @@ public class ObjManagerTest {
 			LDV,1,0,0,//LDV 1(obj2) [o2,o1]
 			DUP,0,0,0,//DUP 0 [o2,o2,o1]
 			STV,0,0,0,//STV 0,[o2,o1], intentionally overwrites obj1 in VariableTable
-			SWAP,0,16,0//SWAP 0,1, [o1,o2], o1 and o2 are once popped from the stack, so o1 may be regarded as a garbage.
+			SWAP,0,16,0,//SWAP 0,1, [o1,o2], o1 and o2 are once popped from the stack, so o1 may be regarded as a garbage.
 			-1,0,0,0,
 		};
 		mem.load(code,0);
