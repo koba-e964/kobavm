@@ -8,6 +8,7 @@ import kobae964_app.kvm3.Flags;
 import kobae964_app.kvm3.Heap;
 import kobae964_app.kvm3.KVMObject;
 import kobae964_app.kvm3.VarEntry;
+import kobae964_app.kvm3.VarEntry.DataTypeMismatchException;
 
 /**
  * String used as internal expression
@@ -153,6 +154,20 @@ public class KString extends ClassCode{
 	 */
 	public static String getContent(long addr)throws IllegalArgumentException
 	{
+		return KString.createInstanceFromAddress(addr).getContent();
+	}
+	/**
+	 * If the object specified by entry is a KString, this method is equivalent to
+	 * {@code new KString(Heap.retrieve(entry.value)).getContent()}
+	 * and
+	 * {@code KString.createInstanceFromAddress(entry.value).getContent()}.
+	 * Otherwise, this willÅ@throw an IllegalArgumentException.
+	 * @param entry a {@link VarEntry} describing KString object
+	 * @return {@link IllegalArgumentException}
+	 */
+	public static String getContent(VarEntry entry)throws IllegalArgumentException, DataTypeMismatchException{
+		entry.checkDataType(DataType.OBJECT);
+		long addr=entry.value;
 		return KString.createInstanceFromAddress(addr).getContent();
 	}
 	/**

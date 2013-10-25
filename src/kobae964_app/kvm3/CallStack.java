@@ -95,10 +95,12 @@ public class CallStack {
 	}
 	public String popString()
 	{
-		VarEntry result=pop();
+		VarEntry result=referPop();
 		result.checkDataType(OBJECT);
 		long addr=result.value;
-		return KString.getContent(addr);
+		String str=KString.getContent(addr);
+		result.unrefer();
+		return str;
 	}
 	private List<Integer> data;
 	@Override

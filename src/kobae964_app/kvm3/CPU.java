@@ -44,7 +44,7 @@ public class CPU {
 	}
 	int decode_sub(int code)
 	{
-		switch(code%64)
+		switch(code&0x3f)
 		{
 		case LDCim://LDC.im
 		{
@@ -54,11 +54,12 @@ public class CPU {
 		}
 		case LDCcp://LDC.cp st0 ar0
 		{
-			VarEntry st0=stack.pop();
+			VarEntry st0=stack.referPop();
 			String clzName=KString.getContent(st0.value);
 			int ar0=code>>>8;//unsigned
 			VarEntry result=ClassLoader.getConstant(ClassLoader.getClassID(clzName), ar0);
 			stack.push(result);
+			st0.unrefer();
 			break;
 		}
 		case LDCcpcur://LDC.cp.cur ar0
@@ -199,11 +200,15 @@ public class CPU {
 		case CALLst://CALL.st st0 st1(14)
 		{
 			int ar0=code>>>8;//number of arguments
-			String className=stack.popString();
-			String methodName=stack.popString();
+			VarEntry classNameO=stack.referPop();
+			VarEntry methodNameO=stack.referPop();
+			String className=KString.getContent(classNameO);
+			String methodName=KString.getContent(methodNameO);
 			VarEntry[] args=new VarEntry[ar0];
+			VarEntry[] argsCp=new VarEntry[ar0];
 			for(int i=0;i<ar0;i++){
-				args[i]=stack.pop();
+				args[i]=stack.referPop();
+				argsCp[i]=args[i];
 			}
 			ClassData dat=ClassLoader.getClassData(className);
 			if(dat.hasVMCode(methodName))
@@ -218,16 +223,24 @@ public class CPU {
 					stack.push(res);
 				}
 			}
+			//unrefer all arguments
+			classNameO.unrefer();
+			methodNameO.unrefer();
+			for(VarEntry arg:argsCp){
+				arg.unrefer();
+			}
 			break;
 		}
 		case CALLin://CALL.in ar0 st0 st1 st2 ...(15)
 		{
 			int ar0=code>>>8;//number of arguments
-			VarEntry instance=stack.pop();//st0
-			String methodName=stack.popString();//st1
+			VarEntry instance=stack.referPop();//st0
+			VarEntry methodNameO=stack.referPop();//st1
+			String methodName=KString.getContent(methodNameO);
 			VarEntry[] args=new VarEntry[ar0];
+			VarEntry[] argsCp=new VarEntry[ar0];
 			for(int i=0;i<ar0;i++){
-				args[i]=stack.pop();
+				argsCp[i]=args[i]=stack.pop();
 			}
 			int classID=ClassLoader.getClassID(instance);
 			ClassData dat=ClassLoader.getClassData(classID);
@@ -242,6 +255,12 @@ public class CPU {
 				if(res!=null){
 					stack.push(res);
 				}
+			}
+			//unrefer
+			instance.unrefer();
+			methodNameO.unrefer();
+			for(VarEntry arg:argsCp){
+				arg.unrefer();
 			}
 			break;
 		}
@@ -266,6 +285,7 @@ public class CPU {
 		}
 		case CMPeq://CMP.eq(19)
 		{
+			//This operation does not see the contents, so even if gc works, there is no problem.
 			VarEntry st0=stack.pop();
 			VarEntry st1=stack.pop();
 			stack.pushBool(st0.type==st1.type&&st0.value==st1.value);
@@ -337,7 +357,7 @@ public class CPU {
 		case 0x3f://EXIT
 			return -1;
 		default:
-			throw new RuntimeException("Invalid Code");
+			throw new RuntimeException("Invalid Code:"+Integer.toHexString(code));
 		}
 		if(DEBUG){
 			System.out.printf("code=%x\n",code);
