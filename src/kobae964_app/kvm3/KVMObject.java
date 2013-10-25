@@ -71,5 +71,13 @@ public class KVMObject {
 	public byte[] getContent(){
 		return Arrays.copyOf(data,data.length);
 	}
+	@Override
+	public String toString(){
+		int classID=getClassID();
+		String flag=isConstObj()?"C":"";
+		flag+=isVarObj()?"V":"";
+		return "ClassID="+classID+" name="+ClassLoader.getClassData(classID).getName()
+				+" flag="+flag+" content="+Arrays.toString(getContent());
+	}
 
 }

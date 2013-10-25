@@ -46,6 +46,8 @@ public class CallStackTest {
 		cs.pushReal(3.0);
 		double r=cs.popReal();
 		assertEquals(3.0, r, 1e-9);
+		//for prevent gc from unintentional working
+		ObjManager.refer(cs.getAt(0));
 		String v=cs.popString();
 		assertEquals("xfyxfxg",v);
 	}

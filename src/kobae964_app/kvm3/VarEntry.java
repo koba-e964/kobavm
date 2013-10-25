@@ -50,7 +50,7 @@ public final class VarEntry implements Cloneable{
 	}
 	/**
 	 * Utility method which takes argument(Object) and returns a {@link VarEntry} that holds the argument.
-	 * {@code value} must be an instance of {@link Byte}, {@link Short}, {@link Integer}, {@link Long}, {@link Float}, {@link Double}, {@link Boolean}, {@link Character}, or {@link String}.
+	 * {@code value} must be an instance of {@link Byte}, {@link Short}, {@link Integer}, {@link Long}, {@link Float}, {@link Double}, {@link Boolean}, {@link Character}, {@link String}, or {@link ClassCode}.
 	 * @param value The content of returned {@link VarEntry}
 	 * @return a VarEntry which holds {@code value}
 	 * @exception IllegalArgumentException if {@code value} is not convertible to VarEntry
@@ -58,6 +58,10 @@ public final class VarEntry implements Cloneable{
 	public static VarEntry valueOf(Object value)throws IllegalArgumentException{
 		if(value==null){
 			return new VarEntry(DataType.OBJECT, Heap.NULL_ADDR);
+		}
+		if(value instanceof ClassCode){
+			long addr=((ClassCode) value).getAddress();
+			return new VarEntry(DataType.OBJECT,addr);
 		}
 		if(value instanceof Number){
 			if(value instanceof Byte

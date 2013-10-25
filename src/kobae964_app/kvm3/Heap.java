@@ -6,11 +6,13 @@ import java.util.Map;
 public class Heap {
 	static Map<KVMObject, Long> addr;
 	static Map<Long,KVMObject> inv;
+	static Map<Long,Integer> refc;//reference count
 	static long count=0L;
 	static
 	{
 		addr=new HashMap<KVMObject, Long>();
 		inv=new HashMap<Long, KVMObject>();
+		refc=new HashMap<Long,Integer>();
 		count=0;
 	}
 	/**
@@ -32,6 +34,7 @@ public class Heap {
 		}
 		addr.put(raw, count);
 		inv.put(count, raw);
+		refc.put(count, 0);
 		return count++;
 	}
 	public static KVMObject retrieve(long val)
@@ -45,6 +48,41 @@ public class Heap {
 			return addr.get(obj);
 		}
 		throw new IllegalArgumentException();
+	}
+	/**
+	 * increments reference counter of addr.
+	 * @param addr the address of target object.
+	 */
+	static void refer(long addr){
+		if(!inv.containsKey(addr)){
+			throw new IllegalArgumentException("not a valid address:"+addr);
+		}
+		refc.put(addr, refc.get(addr)+1);
+	}
+	/**
+	 * decrements reference counter of addr.
+	 * @param addr the address of target object.
+	 */
+	static void unrefer(long addr){
+		if(!inv.containsKey(addr)){
+			throw new IllegalArgumentException("not a valid address:"+addr);
+		}
+		refc.put(addr, refc.get(addr)-1);
+		if(refc.get(addr)<=0){
+			//gc
+			System.out.println("object (addr="+addr+") became alone. gc...");
+			//TODO garbage collection
+			KVMObject obj=inv.get(addr);
+			inv.remove(addr);
+			Heap.addr.remove(obj);
+			refc.remove(addr);
+		}
+	}
+	static void dumpAll(){
+		for(Map.Entry<Long, KVMObject> entry:inv.entrySet()){
+			System.out.println("["+entry.getKey()+"]=>"+entry.getValue());
+			System.out.println("refcount="+refc.get(entry.getKey()));
+		}
 	}
 	/**
 	 * Address that indicates null reference.

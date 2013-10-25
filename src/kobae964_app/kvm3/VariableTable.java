@@ -21,6 +21,10 @@ public class VariableTable {
 	}
 	public void deallocate()
 	{
+		//unreference all objects in current table
+		for(VarEntry ve:current){
+			ObjManager.unrefer(ve);
+		}
 		current=st.get(st.size()-1);
 		st.remove(st.size()-1);
 	}
@@ -28,9 +32,10 @@ public class VariableTable {
 	{
 		return current[i];
 	}
-	public void store(int ind,VarEntry var)
-	{
+	public void store(int ind,VarEntry var){
+		ObjManager.unrefer(current[ind]);//unrefer
 		current[ind]=var;
+		ObjManager.refer(var);//refer
 	}
 	public int size(){
 		return current.length;

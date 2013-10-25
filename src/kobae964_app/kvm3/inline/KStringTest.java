@@ -8,6 +8,7 @@ import kobae964_app.kvm3.CPU;
 import kobae964_app.kvm3.CallStack;
 import kobae964_app.kvm3.DataType;
 import kobae964_app.kvm3.Mem;
+import kobae964_app.kvm3.ObjManager;
 import kobae964_app.kvm3.VarEntry;
 import kobae964_app.kvm3.VariableTable;
 import static kobae964_app.kvm3.CPU.*;
@@ -26,9 +27,11 @@ public class KStringTest {
 	public void testCallCharAt(){
 		Random rand=new Random();
 		String str="which is infinite\nwhich is yes";
+		KString obj=new KString(str);
+		ObjManager.refer(new VarEntry(DataType.OBJECT,obj.getAddress()));
 		for(int i=0;i<50;i++){
 			int index=rand.nextInt(str.length());
-			VarEntry result=callInstance(new KString(str),"charAt",index);
+			VarEntry result=callInstance(obj,"charAt",index);
 			result.checkDataType(DataType.INT);
 			assertEquals(new VarEntry(DataType.INT,str.charAt(index)),result);
 		}
@@ -104,6 +107,8 @@ public class KStringTest {
 		}
 		//cs.size()>=1
 		assertEquals(1,cs.size());
+		vt.store(0, VarEntry.valueOf(0));//let gc works
+		vt.store(1, VarEntry.valueOf(0));
 		return cs.getAt(0);
 		
 	}

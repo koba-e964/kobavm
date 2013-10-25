@@ -18,6 +18,7 @@ public class CallStack {
 		data.add(type);
 		data.add((int)val);
 		data.add((int)(val>>>32));
+		ObjManager.refer(new VarEntry(type,val));//refer
 	}
 	public void push(VarEntry ve)
 	{
@@ -44,12 +45,21 @@ public class CallStack {
 	{
 		push(OBJECT.ordinal(),addr);
 	}
+	private void nullifyAt(int ind){
+		VarEntry ve=getAt(ind);
+		ObjManager.unrefer(ve);
+		int size_3=data.size()-3;
+		data.set(size_3-3*ind,-1);//fill with invalid value
+		data.set(size_3-3*ind+1,-1);
+		data.set(size_3-3*ind+2,-1);
+	}
 	public VarEntry pop()
 	{
 		if(data.size()==0){
 			throw new IllegalStateException("Attempted to pop empty stack (in CallStack)");
 		}
 		VarEntry res=getAt(0);
+		nullifyAt(0);
 		data.subList(data.size()-3, data.size()).clear();
 		return res;
 	}
@@ -100,6 +110,8 @@ public class CallStack {
 	}
 	public void setAt(int index,VarEntry ve)throws IndexOutOfBoundsException{
 		checkIndex(index);
+		nullifyAt(index);
+		ObjManager.refer(ve);
 		int size_3=data.size()-3;
 		data.set(size_3-3*index,ve.type);
 		data.set(size_3-3*index+1,(int)ve.value);
