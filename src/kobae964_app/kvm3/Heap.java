@@ -39,7 +39,9 @@ public class Heap {
 	}
 	public static KVMObject retrieve(long val)
 	{
-		return inv.get(val);
+		if(inv.containsKey(val))
+			return inv.get(val);
+		throw new IllegalArgumentException("invalid address:"+val);
 	}
 	public static long toAddress(KVMObject obj)
 	{

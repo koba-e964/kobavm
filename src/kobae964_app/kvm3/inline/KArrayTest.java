@@ -92,9 +92,12 @@ public class KArrayTest {
 	@Test
 	public void testArrayGC(){
 		KString obj=new KString("eliminated");//obj.refcount=1
-		KArray ary=new KArray(2);
 		VarEntry vobj=VarEntry.valueOf(obj);
+		vobj.refer();
+		KArray ary=new KArray(2);
+		VarEntry.valueOf(ary).refer();
 		ary.call("set", VarEntry.valueOf(0),vobj);
+		ObjManager.dumpAll();
 		vobj.unrefer();//it is probable that a reference to object is only held by an array.
 		VarEntry result=ary.call("get",VarEntry.valueOf(0));
 		assertEquals(vobj,result);

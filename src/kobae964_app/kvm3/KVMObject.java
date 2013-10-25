@@ -14,7 +14,7 @@ public class KVMObject {
 	/**
 	 * This constructor should be called only by {@link Heap#create(int, byte[], int)}.
 	 * @param classID
-	 * @param data
+	 * @param data data should be initialized and every object in data should be performed refer(object).
 	 * @param flags
 	 */
 	KVMObject(int classID,byte[] data,int flags)
@@ -58,10 +58,14 @@ public class KVMObject {
 	}
 	/**
 	 * size=12
+	 * This method invokes ve.refer(), that is, increments refcount.
 	 * @param start 
 	 * @param ve VarEntry
 	 */
 	public void setVarEntry(int start,VarEntry ve){
+		VarEntry old=getVarEntry(start);
+		ve.refer();
+		old.unrefer();
 		setInt(start,4,ve.type);
 		setInt(start+4,8,ve.value);
 	}

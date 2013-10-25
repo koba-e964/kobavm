@@ -25,7 +25,8 @@ public class KArray extends ClassCode {
 		commonInit(array.length);
 		KVMObject obj=Heap.retrieve(addr);
 		for(int i=0;i<array.length;i++){
-			obj.setVarEntry(4+12*i,VarEntry.valueOf(array[i]));
+			VarEntry ve=VarEntry.valueOf(array[i]);
+			obj.setVarEntry(4+12*i,ve);//refc++
 		}
 	}
 	public KArray(int length){
