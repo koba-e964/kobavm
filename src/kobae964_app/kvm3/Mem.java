@@ -1,5 +1,14 @@
 package kobae964_app.kvm3;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Memory and its manager.
+ * @author koba-e964
+ *
+ */
 public class Mem
 {
 	public byte[] memory=null;
@@ -67,5 +76,31 @@ public class Mem
 	public String toString()
 	{
 		return "memory size:0x"+Integer.toHexString(m_size)+"\r\n";
+	}
+	//very naive manager.
+	private int used=0;
+	private Map<Integer,Integer> map=new HashMap<Integer, Integer>();//starting address->length
+	public int allocate(int len){
+		if(len<0){
+			throw new IllegalArgumentException("length negative:"+len);
+		}
+		int tmp=used;
+		used+=(len+3)&-4;
+		if(used>m_size){
+			throw new RuntimeException("memory ran out");
+		}
+		map.put(tmp,len);
+		return tmp;
+	}
+	public void free(int addr){
+		if(map.containsKey(addr)){
+			map.remove(addr);
+		}
+	}
+	public int getLength(int addr){
+		return map.get(addr);
+	}
+	public Map<Integer,Integer> memView(){
+		return Collections.unmodifiableMap(map);
 	}
 }
