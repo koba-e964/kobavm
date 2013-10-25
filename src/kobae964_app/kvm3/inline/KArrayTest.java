@@ -6,6 +6,7 @@ import kobae964_app.kvm3.ClassLoader;
 import kobae964_app.kvm3.DataType;
 import kobae964_app.kvm3.Heap;
 import kobae964_app.kvm3.KVMObject;
+import kobae964_app.kvm3.ObjManager;
 import kobae964_app.kvm3.VarEntry;
 
 import org.junit.Test;
@@ -87,6 +88,18 @@ public class KArrayTest {
 		long addr=inst.getAddress();
 		KArray inst2=KArray.createInstanceFromAddress(addr);
 		assertEquals(addr,inst2.getAddress());
+	}
+	@Test
+	public void testArrayGC(){
+		KString obj=new KString("eliminated");//obj.refcount=1
+		KArray ary=new KArray(2);
+		VarEntry vobj=VarEntry.valueOf(obj);
+		ary.call("set", VarEntry.valueOf(0),vobj);
+		vobj.unrefer();//it is probable that a reference to object is only held by an array.
+		VarEntry result=ary.call("get",VarEntry.valueOf(0));
+		assertEquals(vobj,result);
+		assertEquals("eliminated",KString.getContent(result.value));//if gc'ed, this will cause an error.
+		ObjManager.dumpAll();
 	}
 
 }
