@@ -30,6 +30,7 @@ public class LoaderTest {
 				0,0,0,0,0,0,0,0,//method:0~0
 				0,0,0,0,0,0,0,0,//field:0~0
 				};
+		@SuppressWarnings("unused")
 		Loader sol=new Loader(source);
 	}
 	@Test
@@ -60,7 +61,7 @@ public class LoaderTest {
 				Loader.INT,0,0,0,
 				0x12,0x34,0x56,(byte)0xe8,(byte)0x9a,0,0,0,
 				Loader.STRING,0,0,0,
-				96,0,0,0,7,0,0,0,//72~(72+6)
+				96,0,0,0,7,0,0,0,//72~(72+7)
 				Loader.REAL,0,0,0,
 				0,0,0,0,0,0,0,0,
 				Loader.ARRAY,0,0,0,
@@ -76,6 +77,38 @@ public class LoaderTest {
 		assertArrayEquals(sol.bdat.constPool,
 				new Object[]{(Long)0x9ae8563412L,"abelsch",(Double)0.0,
 				new long[]{0x0807060504030201L,0x570000130000009fL}});
+	}
+	@Test
+	public void testFields() {
+		byte[] source={'k','v','m',0x7f,//header
+				36,0,0,0,12,0,0,0,//code:36~(36+12)
+				48,0,0,0,36,0,0,0,//constpool:48~(48+36)
+				92,0,0,0,0,0,0,0,//method:92~92
+				92,0,0,0,12,0,0,0,//field:92~(92+16)
+				0x03,(byte)0xd8,0x02,0x26,
+				0x32,0x5e,(byte)0x85,(byte)0xee,
+				0x32,0x5e,(byte)0x85,(byte)0xee,
+				//48
+				Loader.INT,0,0,0,
+				0x12,0x34,0x56,(byte)0xe8,(byte)0x9a,0,0,0,
+				Loader.STRING,0,0,0,
+				84,0,0,0,5,0,0,0,//84~(84+5):test0
+				Loader.STRING,0,0,0,
+				89,0,0,0,1,0,0,0,//92~93:I
+				//84
+				't','e','s','t','0',
+				//89
+				'I',0,0,
+				//92
+				1,0,0,0,//name=sid[1]:test0
+				0,0,0,0,//offset=0
+				2,0,0,0,//sign=sid[2]:I
+		};
+		Loader sol=new Loader(source);
+		assertArrayEquals(sol.bdat.code, Arrays.copyOfRange(source, 36, 36+12));
+		assertArrayEquals(sol.bdat.constPool,
+				new Object[]{(Long)0x9ae8563412L,"test0","I",});
+		assertArrayEquals(new String[]{"test0"},sol.bdat.fieldNames);
 	}
 
 }

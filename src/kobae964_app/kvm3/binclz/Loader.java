@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import kobae964_app.kvm3.BinaryClassData;
-import kobae964_app.kvm3.DataType;
 import kobae964_app.kvm3.VarEntry;
 
 public class Loader {
@@ -46,6 +45,44 @@ public class Loader {
 		bdat=new BinaryClassData();
 		bdat.code=getCode(code_place[0],code_place[1]);
 		bdat.constPool=getConstPool(constpool_place[0], constpool_place[1]);
+		//fields
+		{
+			int start=field_place[0];
+			if(field_place[1]%12!=0){
+				throw new RuntimeException("field_place.len must be multiple of 12, but we got:"+field_place[1]);
+			}
+			int len=field_place[1]/12;
+			bdat.fieldNames=new String[len];
+			bdat.fieldOffsets=new int[len];
+			bdat.fieldSigns=new String[len];
+			for(int i=0;i<len;i++){
+				int nameSid=bytesToInt(source,start+12*i , 4);
+				bdat.fieldNames[i]=(String) bdat.constPool[nameSid];
+				bdat.fieldOffsets[i]=bytesToInt(source,start+12*i+4,4);
+				int signSid=bytesToInt(source, start+12*i+8, 4);
+				bdat.fieldSigns[i]=(String)bdat.constPool[signSid];
+			}
+		}
+		//methods
+		{
+			int start=method_place[0];
+			if(method_place[1]%16!=0){
+				throw new RuntimeException("method_place.len must be multiple of 16, but we got:"+method_place[1]);
+			}
+			int len=method_place[1]/16;
+			bdat.methodNames=new String[len];
+			bdat.methodNumberOfVariable=new int[len];
+			bdat.methodOffsets=new int[len];
+			bdat.methodSigns=new String[len];
+			for(int i=0;i<len;i++){
+				int nameSid=bytesToInt(source,start+16*i , 4);
+				bdat.methodNames[i]=(String)bdat.constPool[nameSid];
+				bdat.methodNumberOfVariable[i]=bytesToInt(source,start+16*i+4 , 4);
+				bdat.methodOffsets[i]=bytesToInt(source,start+16*i+8 , 4);
+				int signSid=bytesToInt(source, start+16*i+12, 4);
+				bdat.methodSigns[i]=(String)bdat.constPool[signSid];
+			}
+		}
 	}
 	byte[] getCode(int start,int length){
 		byte[] out=new byte[length];
