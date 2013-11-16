@@ -2,8 +2,6 @@ package kobae964_app.kvm3;
 
 import static org.junit.Assert.*;
 
-import java.util.Collections;
-
 import org.junit.Test;
 
 public class MemTest {

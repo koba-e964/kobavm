@@ -190,6 +190,9 @@ public class ClassData {
 	 * @return new int{address,sizeofVariableTable}
 	 */
 	public int[] getVMCodeAddressSizeofVT(String name){
+		if(!methodTable.containsKey(name)){
+			throw new RuntimeException("No such method:"+name+" in "+this.name);
+		}
 		int ind=methodTable.get(name);
 		return new int[]{codePlace+bdat.methodOffsets[ind],bdat.methodNumberOfVariable[ind]};
 	}
