@@ -80,7 +80,11 @@ public class Mem
 	//very naive manager.
 	private int used=0;
 	private Map<Integer,Integer> map=new HashMap<Integer, Integer>();//starting address->length
+	private Map<Integer,String> notes=new HashMap<Integer, String>();//info
 	public int allocate(int len){
+		return allocate(len,"");
+	}
+	public int allocate(int len,String info){
 		if(len<0){
 			throw new IllegalArgumentException("length negative:"+len);
 		}
@@ -90,6 +94,7 @@ public class Mem
 			throw new RuntimeException("memory ran out");
 		}
 		map.put(tmp,len);
+		notes.put(tmp,info);
 		return tmp;
 	}
 	public void free(int addr){
