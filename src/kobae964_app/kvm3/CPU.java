@@ -28,6 +28,12 @@ public class CPU {
 		final int N=10;
 		this.vtable.allocate(N);
 	}
+	public void setPC(int newPC){
+		if(newPC<0 || newPC>=mem.m_size){
+			throw new IllegalArgumentException("newPC out of memory([0,"+mem.m_size+")):"+newPC);
+		}
+		this.pc=newPC;
+	}
 	public void run()
 	{
 		while(decode()>=0){}
