@@ -3,7 +3,6 @@ package kobae964_app.kvm3.binclz;
 import static org.junit.Assert.*;
 
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.junit.Test;
