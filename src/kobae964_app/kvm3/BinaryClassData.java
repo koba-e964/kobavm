@@ -33,4 +33,7 @@ public class BinaryClassData implements Cloneable{
 			throw new AssertionError(e);
 		}
 	}
+	public String getStringData(int sid) {
+		return (String) this.constPool[sid];
+	}
 }

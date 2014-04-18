@@ -55,12 +55,13 @@ public class Loader {
 			bdat.fieldNames=new String[len];
 			bdat.fieldOffsets=new int[len];
 			bdat.fieldSigns=new String[len];
-			for(int i=0;i<len;i++){
-				int nameSid=bytesToInt(source,start+12*i , 4);
-				bdat.fieldNames[i]=(String) bdat.constPool[nameSid];
-				bdat.fieldOffsets[i]=bytesToInt(source,start+12*i+4,4);
-				int signSid=bytesToInt(source, start+12*i+8, 4);
-				bdat.fieldSigns[i]=(String)bdat.constPool[signSid];
+			for(int i = 0; i < len; i++) {
+				int nameSid = bytesToInt(source, start+12*i  , 4);
+				int offset  = bytesToInt(source, start+12*i+4, 4);
+				int signSid = bytesToInt(source, start+12*i+8, 4);
+				bdat.fieldNames[i] = bdat.getStringData(nameSid);
+				bdat.fieldOffsets[i] = offset;
+				bdat.fieldSigns[i] = bdat.getStringData(signSid);
 			}
 		}
 		//methods
@@ -75,12 +76,14 @@ public class Loader {
 			bdat.methodOffsets=new int[len];
 			bdat.methodSigns=new String[len];
 			for(int i=0;i<len;i++){
-				int nameSid=bytesToInt(source,start+16*i , 4);
-				bdat.methodNames[i]=(String)bdat.constPool[nameSid];
-				bdat.methodNumberOfVariable[i]=bytesToInt(source,start+16*i+4 , 4);
-				bdat.methodOffsets[i]=bytesToInt(source,start+16*i+8 , 4);
-				int signSid=bytesToInt(source, start+16*i+12, 4);
-				bdat.methodSigns[i]=(String)bdat.constPool[signSid];
+				int nameSid      = bytesToInt(source, start+16*i,    4);
+				int numVariables = bytesToInt(source, start+16*i+ 4, 4);
+				int offset       = bytesToInt(source, start+16*i+ 8, 4);
+				int signSid      = bytesToInt(source, start+16*i+12, 4);
+				bdat.methodNames[i] = bdat.getStringData(nameSid);
+				bdat.methodNumberOfVariable[i] = numVariables;
+				bdat.methodOffsets[i] = offset;
+				bdat.methodSigns[i] = bdat.getStringData(signSid);
 			}
 		}
 	}
@@ -89,6 +92,12 @@ public class Loader {
 		System.arraycopy(source, start, out, 0, length);
 		return out;
 	}
+	/**
+	 * Gets the contents in constant pool.
+	 * @param start
+	 * @param length
+	 * @return [Int|String|Real|Array]
+	 */
 	Object[] getConstPool(int start,int length){
 		assert length%12==0;
 		Object[] out=new Object[length/12];
